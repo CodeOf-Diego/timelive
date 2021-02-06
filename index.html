@@ -1,0 +1,67 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="TimeX.js"></script>
+<script src="TypeX.js"></script>
+<script src="modules/Controllers/ControllerGlobal.js"></script>
+<script src="modules/Entities/Element.js"></script>
+<script src="modules/Entities/ElementInput.js"></script>
+<script src="modules/Entities/ElementInputController.js"></script>
+<script src="Project.js"></script>
+<script src="modules/Toolbox/Toolbox.js"></script>
+<script src="modules/Toolbox/ControllerToolbox.js"></script>
+<script src="modules/Timeline/Timeline.js"></script>
+<script src="modules/Timeline/ControllerTimeline.js"></script>
+<script src="modules/Keyboard/Keyboard.js"></script>
+<script src="modules/ProjectInfo/ProjectInfo.js"></script>
+<script src="modules/ProjectInfo/ControllerProjectInfo.js"></script>
+<script src="modules/Focus/Focus.js"></script>
+<script src="modules/Canvas/Canvas.js"></script>
+<link rel="stylesheet" href="movements.css">
+<script>
+    let p = new Project();
+    p.new();
+
+
+
+</script>
+
+<div id='box1'>
+    <div id="newElement"><h1>N elem</h1></div>
+    <div id="newBond"><h1>N bond</h1></div>
+</div>
+<div id="boxInputElement" hidden>
+  Name<br>
+  <input type="text" id="elementName"><br>
+  Description<br>
+  <input type="text" id="elementDescription"><br>
+  Image<br>
+  <input type="text" id="elementImg"><br>
+  Start showing<br>
+  <input type="text" id="elementStart"><br>
+  End showing<br>
+  <input type="text" id="elementEnd"><br>
+    <button id="saveElement"> Crea</button>
+</div>
+
+<br>
+Timeline
+<select id='timeline'>
+    <option value="1">1</option>
+</select>
+
+<div id="boxInfo" hidden>
+    Name<br>
+    <input type="text" id="infoName"><br>
+    Lenght<br>
+    <input type="text" id="infoLength"><br>
+    Description<br>
+    <input type="text" id="infoDescription"><br>
+    Background Image<br>
+    <input type="text" id="infoImg"><br>
+</div>
+
+
+    <div class="container">
+    </div>
+
+</html>
