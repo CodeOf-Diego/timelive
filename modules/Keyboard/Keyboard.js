@@ -1,9 +1,19 @@
+/**
+ * Handles keyboard interactions
+ * The class has a listener that records inputs and execute any possible action related to it
+ * The avalilable inputs depend on the current focus in the project, main/new element/settings
+ * 
+ * If a specific focus has multiple input that start with the same part, there will be a small delay before executing the shorter input
+ * otherwise, if there is only one possible action for that imput it'll be executed immediately
+ * 
+ */
+
 class Keyboard {
     constructor() {
         this.keyList = [];
         this.countdown = 200;
         this.last_timeout = 0;
-        this.debug = false;
+        this.debug = true;
         addEventListener('keydown', this.registerKey);
 
     }

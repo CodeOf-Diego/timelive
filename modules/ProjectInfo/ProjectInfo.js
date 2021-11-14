@@ -1,3 +1,13 @@
+/**
+ * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
+ * it has the following functionalities:
+ * 
+ * new() - set up a new project
+ * load() - opens an existing project and loads it in the page
+ * unload() - closes a project
+ * WIP
+ */
+
 class ProjectInfo {
 
     constructor() {
