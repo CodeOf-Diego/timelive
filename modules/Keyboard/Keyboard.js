@@ -13,7 +13,7 @@ class Keyboard {
         this.keyList = [];
         this.countdown = 200;
         this.last_timeout = 0;
-        this.debug = true;
+        this.debug = false;
         addEventListener('keydown', this.registerKey);
 
     }
@@ -84,6 +84,10 @@ class Keyboard {
         switch (e.key) {
             case 'Escape':
                 p.elementInput.unload();
+                break;
+                // TODO FIX enter doesn't save the element
+            case 'Enter':
+                $('#newElement').click();
                 break;
         }
     }

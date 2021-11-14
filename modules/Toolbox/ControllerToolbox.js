@@ -4,14 +4,17 @@ class ControllerToolbox extends ControllerGlobal{
         this.controllers();
     }
 
+    newElement() {
+        if (p.toolbox.controller.active) {
+            p.elementInput.new();
+            p.elementInput.load();
+        }
+    }
+
+
     controllers() {
         $(document).ready(function(){
-            $('#newElement').click(() => {
-                if (p.toolbox.controller.active) {
-                    p.elementInput.new();
-                    p.elementInput.load();
-                }
-            });
+            $('#newElement').on('click',p.toolbox.controller.newElement);
         });
     }
 
