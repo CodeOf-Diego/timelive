@@ -9,8 +9,43 @@ This allows a complete understanding of what can be known while avoiding all pos
 ## TODO
 - [x] introduce a basic structure that can change overtime
 - [x] implement a basic keyboard controller
-- [ ] define all possible interaction of elements
+- [ ] define an entity
+- [ ] define possible connections between entities
+- [ ] define all possible interaction of events
 - [ ] implement a drawing system
+
+
+
+
+
+Entity  
+entity is anything relevant in the media, it can have relation to any other entity example:
+2 entities are married
+1 entity is child of 1 entities
+1 entity (person) owns another entity(object)
+
+
+
+Event
+event includes any valuable interaction between 1 or more entities
+event example:
+E1 and E2 meet talk for the first time
+E4 dies of age
+E3 find E5(obj) and keep it
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20,6 +55,7 @@ This allows a complete understanding of what can be known while avoiding all pos
 - ```←, →``` Move trough the timeline
 - ```S``` New element
 - ```N``` Open Settings
+- ```Mouse click``` Open element
 
 ## On create / update elemenet
 - ```TAB``` Default movement between slots
