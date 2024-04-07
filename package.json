@@ -5,6 +5,7 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "repository": {
@@ -16,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/CodeOf-Diego/timelive/issues"
   },
-  "homepage": "https://github.com/CodeOf-Diego/timelive#readme",
+  "homepage": "https://CodeOf-Diego.github.io/timelive",
   "devDependencies": {
     "gh-pages": "^6.1.1",
     "terser-webpack-plugin": "^5.3.10",
