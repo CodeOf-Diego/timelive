@@ -1,4 +1,6 @@
-class ControllerToolbox extends ControllerGlobal{
+import ControllerGlobal from "../Controllers/ControllerGlobal";
+
+export default class ControllerToolbox extends ControllerGlobal{
     constructor() {
         super();
         this.controllers();

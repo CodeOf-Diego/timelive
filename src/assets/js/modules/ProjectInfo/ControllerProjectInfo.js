@@ -1,4 +1,6 @@
-class ControllerProjectInfo extends ControllerGlobal{
+import ControllerGlobal from "../Controllers/ControllerGlobal";
+
+export default class ControllerProjectInfo extends ControllerGlobal{
     constructor() {
         super();
         this.controllers();

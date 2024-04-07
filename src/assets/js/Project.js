@@ -1,4 +1,13 @@
-class Project {
+import TimeX from "./TimeX";
+import ProjectInfo from "./modules/ProjectInfo/ProjectInfo";
+import Toolbox from "./modules/Toolbox/Toolbox";
+import Timeline from "./modules/Timeline/Timeline";
+import Keyboard from "./modules/Keyboard/Keyboard";
+import Focus from "./modules/Focus/Focus";
+import Canvas from "./modules/Canvas/Canvas";
+import ElementInput from "./modules/Entities/ElementInput";
+
+export default class Project {
     constructor() {
         this.globalTime = new TimeX();
         this.projectInfo = new ProjectInfo();

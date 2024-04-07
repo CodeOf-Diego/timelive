@@ -1,3 +1,4 @@
+import ControllerToolbox from "./ControllerToolbox";
 /*
  Handles the insertion of new elements
  the class could
@@ -9,7 +10,7 @@
 
  */
 
-class Toolbox {
+export default class Toolbox {
 
     constructor() {
         this.controller = new ControllerToolbox();

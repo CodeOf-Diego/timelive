@@ -1,8 +1,10 @@
+import ControllerGlobal from "../Controllers/ControllerGlobal";
+
 /*
 Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
  alla stampa e all'utilizzo dei parametri altrove
 */
-class ControllerTimeline extends ControllerGlobal{
+export default class ControllerTimeline extends ControllerGlobal{
   constructor() {
     super();
     this.controllers();

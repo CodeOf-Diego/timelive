@@ -1,4 +1,6 @@
-class Timeline {
+import ControllerTimeline from "./ControllerTimeline";
+
+export default class Timeline {
     constructor() {
         this.controller = new ControllerTimeline();
         this.el = '#timeline';

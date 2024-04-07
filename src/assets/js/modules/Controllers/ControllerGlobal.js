@@ -1,4 +1,4 @@
-class ControllerGlobal {
+export default class ControllerGlobal {
   constructor() {
     this.active = 1;
   }

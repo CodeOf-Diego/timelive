@@ -1,4 +1,6 @@
-class ElementInputController extends ControllerGlobal{
+import ControllerGlobal from "../Controllers/ControllerGlobal";
+
+export default class ElementInputController extends ControllerGlobal{
     constructor() {
         super();
         this.controllers();

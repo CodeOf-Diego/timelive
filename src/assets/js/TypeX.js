@@ -5,7 +5,7 @@
 
  Note that each region starts from an included timeX to the next timeX excluded, or to infinity for the last region
 */
-class TypeX {
+export default class TypeX {
 
 	/* The default value of the data is a region going from 0 to infinity with null value */
 	constructor() {
