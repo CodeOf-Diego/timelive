@@ -8,6 +8,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'), // Output directory
     filename: 'bundle.js' // Output file name
   },  
+    externals: {
+    p: 'p'
+},
   optimization: {
     minimize: false, // Enable minimization
     minimizer: [
