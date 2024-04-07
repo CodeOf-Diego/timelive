@@ -1,8 +1,10 @@
+import Element from "./Element";
+import ElementInputController from "./ElementInputController";
+
 /*
  The class handles the creation of an element and it's interaction with the input box
  */
-
-class ElementInput extends Element{
+ export default class ElementInput extends Element{
 
     constructor() {
         super();

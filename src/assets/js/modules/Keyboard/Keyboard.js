@@ -8,7 +8,7 @@
  * 
  */
 
-class Keyboard {
+export default class Keyboard {
     constructor() {
         this.keyList = [];
         this.countdown = 200;

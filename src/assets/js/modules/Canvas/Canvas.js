@@ -1,4 +1,4 @@
-class Canvas {
+export default class Canvas {
     constructor() {
         this.separation = 40;
     }

@@ -9,12 +9,19 @@ This allows a complete understanding of what can be known while avoiding all pos
 ## TODO
 - [x] introduce a basic structure that can change overtime
 - [x] implement a basic keyboard controller
+- [x] Introduce bundler and rework the code structure
 - [ ] define an entity
 - [ ] define possible connections between entities
 - [ ] define all possible interaction of events
 - [ ] implement a drawing system
 
 
+
+
+# Local setup
+## Requirements
+npm and webpack are required to create the bundle
+after the initial setup launch the command  'npx webpack'
 
 
 

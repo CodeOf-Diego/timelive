@@ -1,4 +1,6 @@
-class Element {
+import TypeX from "../../TypeX";
+
+export default class Element {
 
   constructor() {
     this.ID;
