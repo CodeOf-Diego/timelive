@@ -1,6 +1,7 @@
 import TimeX from "../../TimeX";
 import TypeX from "../../TypeX";
 import ControllerProjectInfo from "./ControllerProjectInfo";
+import { p } from "../../Project";
 /**
  * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
  * it has the following functionalities:

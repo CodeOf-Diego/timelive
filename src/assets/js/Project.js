@@ -7,7 +7,7 @@ import Focus from "./modules/Focus/Focus";
 import Canvas from "./modules/Canvas/Canvas";
 import ElementInput from "./modules/Entities/ElementInput";
 
-export default class Project {
+class Project {
     constructor() {
         this.globalTime = new TimeX();
         this.projectInfo = new ProjectInfo();
@@ -72,3 +72,7 @@ export default class Project {
     }
 
 }
+
+const p = new Project();
+
+export {Project, p}

@@ -135,6 +135,7 @@ class ControllerGlobal {
 ;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectInfo/ControllerProjectInfo.js
 
 
+
 class ControllerProjectInfo extends ControllerGlobal{
     constructor() {
         super();
@@ -144,19 +145,20 @@ class ControllerProjectInfo extends ControllerGlobal{
     controllers() {
         $(document).ready(function(){
             $('#infoLength').change((e) => {
-                if (p.projectInfo.controller.active) {
-                    p.projectInfo.length.set(parseInt($(p.projectInfo.el).val()))
-                    if (p.globalTime.get() > p.projectInfo.length.get()) {
-                        p.globalTime.set(p.projectInfo.length.get());
+                if (Project_p.projectInfo.controller.active) {
+                    Project_p.projectInfo.length.set(parseInt($(Project_p.projectInfo.el).val()))
+                    if (Project_p.globalTime.get() > Project_p.projectInfo.length.get()) {
+                        Project_p.globalTime.set(Project_p.projectInfo.length.get());
 
                     }
-                    p.timeline.draw();
+                    Project_p.timeline.draw();
                 }
             });
         });
     }
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectInfo/ProjectInfo.js
+
 
 
 
@@ -184,7 +186,7 @@ class ProjectInfo {
     }
 
     new() {
-        let T = p.globalTime;
+        let T = Project_p.globalTime;
         this.name = "New Project";
         this.length.set(10);
         this.timeType = 'episode';
@@ -196,18 +198,18 @@ class ProjectInfo {
     load() {
         $('#boxInfo').show();
         this.writeVariables()
-        p.focus.set('info');
+        Project_p.focus.set('info');
     }
 
     unload() {
         $('#boxInfo').hide();
-        p.focus.set('main');
+        Project_p.focus.set('main');
         //refresh
 
     }
 
     writeVariables() {
-        let T = p.globalTime;
+        let T = Project_p.globalTime;
         $('#infoName').val(this.name);
         $('#infoLength').val(this.length.get());
         $('#infoDescription').val(this.description.get(T));
@@ -218,6 +220,7 @@ class ProjectInfo {
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Toolbox/ControllerToolbox.js
 
 
+
 class ControllerToolbox extends ControllerGlobal{
     constructor() {
         super();
@@ -225,16 +228,16 @@ class ControllerToolbox extends ControllerGlobal{
     }
 
     newElement() {
-        if (p.toolbox.controller.active) {
-            p.elementInput.new();
-            p.elementInput.load();
+        if (Project_p.toolbox.controller.active) {
+            Project_p.elementInput.new();
+            Project_p.elementInput.load();
         }
     }
 
 
     controllers() {
         $(document).ready(function(){
-            $('#newElement').on('click',p.toolbox.controller.newElement);
+            $('#newElement').on('click',Project_p.toolbox.controller.newElement);
         });
     }
 
@@ -261,6 +264,7 @@ class Toolbox {
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/ControllerTimeline.js
 
 
+
 /*
 Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
  alla stampa e all'utilizzo dei parametri altrove
@@ -275,9 +279,9 @@ class ControllerTimeline extends ControllerGlobal{
     $(document).ready(function(){
 
       $('#timeline').change(() => {
-        if (p.timeline.controller.active) {
-          p.globalTime.set(parseInt($(p.timeline.el).val()));
-          p.timeline.draw();
+        if (Project_p.timeline.controller.active) {
+          Project_p.globalTime.set(parseInt($(Project_p.timeline.el).val()));
+          Project_p.timeline.draw();
         }
       });
     });
@@ -285,6 +289,7 @@ class ControllerTimeline extends ControllerGlobal{
 }
 
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/Timeline.js
+
 
 
 class Timeline {
@@ -297,8 +302,8 @@ class Timeline {
     draw() {
         // update graphics of the timeline
         $('#timeline option').remove();
-        let T = p.globalTime;
-        for (let i = 0; i <= p.projectInfo.length.get() ; i++) {
+        let T = Project_p.globalTime;
+        for (let i = 0; i <= Project_p.projectInfo.length.get() ; i++) {
             $("#timeline").append(new Option(i.toString(), i.toString(),false, T.get() === i));
         }
         $('#timeline')
@@ -307,6 +312,8 @@ class Timeline {
 
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Keyboard/Keyboard.js
+
+
 /**
  * Handles keyboard interactions
  * The class has a listener that records inputs and execute any possible action related to it
@@ -328,24 +335,24 @@ class Keyboard {
     }
 
     registerKey(e) {
-        if (p.keyboard.last_timeout !== 0) {
-            clearTimeout(p.keyboard.last_timeout);
+        if (Project_p.keyboard.last_timeout !== 0) {
+            clearTimeout(Project_p.keyboard.last_timeout);
         }
-        switch (p.focus.get()) {
-            case "main": p.keyboard.mainControls(e); break;
-            case "info": p.keyboard.infoControls(e); break;
-            case "element": p.keyboard.elementControls(e); break;
+        switch (Project_p.focus.get()) {
+            case "main": Project_p.keyboard.mainControls(e); break;
+            case "info": Project_p.keyboard.infoControls(e); break;
+            case "element": Project_p.keyboard.elementControls(e); break;
         }
-        p.keyboard.last_timeout = setTimeout(p.keyboard.getWord, p.keyboard.countdown);
-        p.keyboard.keyList.push(e.key);
+        Project_p.keyboard.last_timeout = setTimeout(Project_p.keyboard.getWord, Project_p.keyboard.countdown);
+        Project_p.keyboard.keyList.push(e.key);
     }
 
     getWord() {
-        if (p.keyboard.keyList.length > 0) {
-            let keyword = p.keyboard.keyList.join("");
-            p.keyboard.keyList = [];
-            if (p.keyboard.debug)
-                p.keyboard.search(keyword);
+        if (Project_p.keyboard.keyList.length > 0) {
+            let keyword = Project_p.keyboard.keyList.join("");
+            Project_p.keyboard.keyList = [];
+            if (Project_p.keyboard.debug)
+                Project_p.keyboard.search(keyword);
         }
     }
 
@@ -359,23 +366,23 @@ class Keyboard {
     mainControls(e) {
         switch (e.key) {
             case 'n':
-                p.elementInput.new();
-                p.elementInput.load();
+                Project_p.elementInput.new();
+                Project_p.elementInput.load();
                 break;
             case 's':
-                p.projectInfo.new();
-                p.projectInfo.load();
+                Project_p.projectInfo.new();
+                Project_p.projectInfo.load();
                 break;
             case 'ArrowLeft':
-                if (p.globalTime.get() > 0) {
-                    p.globalTime.set(p.globalTime.get() - 1);
-                    p.timeline.draw();
+                if (Project_p.globalTime.get() > 0) {
+                    Project_p.globalTime.set(Project_p.globalTime.get() - 1);
+                    Project_p.timeline.draw();
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.projectInfo.length.get()) {
-                    p.globalTime.set(p.globalTime.get() + 1);
-                    p.timeline.draw();
+                if (Project_p.globalTime.get() < Project_p.projectInfo.length.get()) {
+                    Project_p.globalTime.set(Project_p.globalTime.get() + 1);
+                    Project_p.timeline.draw();
                 }
                 break;
         }
@@ -384,7 +391,7 @@ class Keyboard {
     infoControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.projectInfo.unload();
+                Project_p.projectInfo.unload();
                 break;
         }
     }
@@ -392,7 +399,7 @@ class Keyboard {
     elementControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.elementInput.unload();
+                Project_p.elementInput.unload();
                 break;
                 // TODO FIX enter doesn't save the element
             case 'Enter':
@@ -402,6 +409,8 @@ class Keyboard {
     }
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Focus/Focus.js
+
+
 class Focus {
     constructor() {
         this.focus = "main";
@@ -430,16 +439,16 @@ class Focus {
     updateControllers() {
         switch (this.focus) {
             case 'main':
-                p.toolbox.controller.enable();
-                p.projectInfo.controller.disable();
+                Project_p.toolbox.controller.enable();
+                Project_p.projectInfo.controller.disable();
                 break;
             case 'element':
-                p.toolbox.controller.enable();
-                p.projectInfo.controller.disable();
+                Project_p.toolbox.controller.enable();
+                Project_p.projectInfo.controller.disable();
                 break;
             case 'info':
-                p.toolbox.controller.disable();
-                p.projectInfo.controller.enable();
+                Project_p.toolbox.controller.disable();
+                Project_p.projectInfo.controller.enable();
                 break;
 
 
@@ -549,6 +558,7 @@ class Element {
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/ElementInputController.js
 
 
+
 class ElementInputController extends ControllerGlobal{
     constructor() {
         super();
@@ -559,10 +569,10 @@ class ElementInputController extends ControllerGlobal{
         $(document).ready(function(){
             $('#saveElement').click(() => {
 
-                if (p.elementInput.controller.active) {
-                    p.elementInput.readVariables();
-                    p.elementInput.save();
-                    p.elementInput.unload();
+                if (Project_p.elementInput.controller.active) {
+                    Project_p.elementInput.readVariables();
+                    Project_p.elementInput.save();
+                    Project_p.elementInput.unload();
                 }
             });
         });
@@ -570,6 +580,7 @@ class ElementInputController extends ControllerGlobal{
 
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/ElementInput.js
+
 
 
 
@@ -584,7 +595,7 @@ class ElementInputController extends ControllerGlobal{
     }
 
     new() {
-        let T = p.globalTime;
+        let T = Project_p.globalTime;
         this.setName('',T);
         this.setDescription('',T);
         this.setStart(0,T);
@@ -594,13 +605,13 @@ class ElementInputController extends ControllerGlobal{
     }
 
     open(idOpen) {
-        if (p.elements[parseInt(idOpen)] !== undefined) {
+        if (Project_p.elements[parseInt(idOpen)] !== undefined) {
             this.ID = idOpen;
-            this.name = p.elements[idOpen].name.duplicate();
-            this.description = p.elements[idOpen].description.duplicate();
-            this.start = p.elements[idOpen].start.duplicate();
-            this.end = p.elements[idOpen].end.duplicate();
-            this.img = p.elements[idOpen].img.duplicate();
+            this.name = Project_p.elements[idOpen].name.duplicate();
+            this.description = Project_p.elements[idOpen].description.duplicate();
+            this.start = Project_p.elements[idOpen].start.duplicate();
+            this.end = Project_p.elements[idOpen].end.duplicate();
+            this.img = Project_p.elements[idOpen].img.duplicate();
         }
         else {
             this.new();
@@ -611,19 +622,19 @@ class ElementInputController extends ControllerGlobal{
     load() {
         $('#boxInputElement').show();
         this.writeVariables()
-        p.focus.set('element');
+        Project_p.focus.set('element');
     }
 
     unload() {
         $('#boxInputElement').hide();
-        p.focus.set('main');
+        Project_p.focus.set('main');
         if (this.newElement)
-            p.canvas.addElement(this);
+            Project_p.canvas.addElement(this);
         //refresh
     }
 
     writeVariables() {
-        let T = p.globalTime;
+        let T = Project_p.globalTime;
         $('#elementName').val(this.getName(T)).focus();
         $('#elementDescription').val(this.getDescription(T));
         $('#elementStart').val(this.getStart(T));
@@ -632,7 +643,7 @@ class ElementInputController extends ControllerGlobal{
     }
 
     readVariables() {
-        let T = p.globalTime;
+        let T = Project_p.globalTime;
         this.setName($('#elementName').val(),T);
         this.setDescription($('#elementDescription').val(),T);
         this.setStart($('#elementStart').val(),T);
@@ -643,7 +654,7 @@ class ElementInputController extends ControllerGlobal{
     /* New elements are appended at the end of the public array,
        In existing elements are updated only the attributes with changed values */
     save() {
-        let T = p.globalTime;
+        let T = Project_p.globalTime;
         this.newElement = this.ID === 0;
         if(this.ID === 0) {
             let newElement = new Element();
@@ -652,10 +663,10 @@ class ElementInputController extends ControllerGlobal{
             newElement.setStart(this.getStart(T),T);
             newElement.setEnd(this.getEnd(T),T);
             newElement.setImg(this.getImg(T),T);
-            this.ID = p.elements.push(newElement) - 1;
+            this.ID = Project_p.elements.push(newElement) - 1;
         }
         else {
-            let currElement = p.elements[this.ID];
+            let currElement = Project_p.elements[this.ID];
             if (currElement.getName(T) !== this.getName(T))
                 currElement.setName(this.getName(T), T)
             if (currElement.getDescription(T) !== this.getDescription(T))
@@ -745,11 +756,14 @@ class Project {
 
 }
 
+const Project_p = new Project();
+
+
 ;// CONCATENATED MODULE: ./src/assets/js/index.js
 // Import modules
 
 
-window.p = new Project();
-p.new();
+
+Project_p.new();
 /******/ })()
 ;

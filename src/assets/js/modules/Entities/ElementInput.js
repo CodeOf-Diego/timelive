@@ -1,5 +1,6 @@
 import Element from "./Element";
 import ElementInputController from "./ElementInputController";
+import { p } from "../../Project";
 
 /*
  The class handles the creation of an element and it's interaction with the input box

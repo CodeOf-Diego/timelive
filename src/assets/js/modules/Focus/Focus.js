@@ -1,3 +1,5 @@
+import { p } from "../../Project";
+
 export default class Focus {
     constructor() {
         this.focus = "main";

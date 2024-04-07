@@ -1,3 +1,5 @@
+import { p } from "../../Project";
+
 /**
  * Handles keyboard interactions
  * The class has a listener that records inputs and execute any possible action related to it

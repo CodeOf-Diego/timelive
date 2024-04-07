@@ -1,4 +1,5 @@
 import ControllerGlobal from "../Controllers/ControllerGlobal";
+import { p } from "../../Project";
 
 /*
 Imposta tutti i dati di configurazione in modo da avere tutto cio che serve

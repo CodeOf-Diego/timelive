@@ -1,4 +1,5 @@
 import ControllerGlobal from "../Controllers/ControllerGlobal";
+import { p } from "../../Project";
 
 export default class ControllerProjectInfo extends ControllerGlobal{
     constructor() {

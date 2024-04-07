@@ -1,5 +1,4 @@
 // Import modules
 "use strict";
-import Project from './Project.js';
-window.p = new Project();
+import {p} from './Project.js';
 p.new();
