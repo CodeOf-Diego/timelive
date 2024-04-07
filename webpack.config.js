@@ -29,12 +29,6 @@ module.exports = {
       {
         test: /\.js$/, // Apply the loader to all JavaScript files
         exclude: /node_modules/, // Exclude node_modules directory
-        use: {
-          loader: 'babel-loader', // Use babel-loader for transpiling
-          options: {
-            presets: ['@babel/preset-env'] // Use @babel/preset-env for ES6+ support
-          }
-        }
       }
     ]
   }
