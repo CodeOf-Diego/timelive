@@ -84,6 +84,7 @@ export default class TypeX {
 		}
 	}
 
+	/* Duplicates the data and returns a copy */
 	duplicate() {
 		return jQuery.extend(true, new TypeX, this)
 	}

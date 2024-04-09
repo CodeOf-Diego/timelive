@@ -10,18 +10,20 @@ import { p } from "../../Project";
     constructor() {
         super();
         this.controller = new ElementInputController();
+        this.isNewElement = false;
     }
 
     new() {
         let T = p.globalTime;
         this.setName('',T);
         this.setDescription('',T);
-        this.setStart(0,T);
+        this.setStart(p.globalTime.get(),T);
         this.setEnd(0,T);
         this.setImg('',T);
         this.ID = 0;
     }
 
+    /* Open an element input interface, if it's an existing element the corresponding data is passed*/
     open(idOpen) {
         if (p.elements[parseInt(idOpen)] !== undefined) {
             this.ID = idOpen;
@@ -46,8 +48,9 @@ import { p } from "../../Project";
     unload() {
         $('#boxInputElement').hide();
         p.focus.set('main');
-        if (this.newElement)
+        if (this.isNewElement)
             p.canvas.addElement(this);
+            this.isNewElement = false
         //refresh
     }
 
@@ -73,7 +76,7 @@ import { p } from "../../Project";
        In existing elements are updated only the attributes with changed values */
     save() {
         let T = p.globalTime;
-        this.newElement = this.ID === 0;
+        this.isNewElement = this.ID === 0;
         if(this.ID === 0) {
             let newElement = new Element();
             newElement.setName(this.getName(T),T);

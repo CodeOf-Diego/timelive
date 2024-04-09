@@ -15,6 +15,7 @@ export default class ElementInputController extends ControllerGlobal{
                     p.elementInput.readVariables();
                     p.elementInput.save();
                     p.elementInput.unload();
+                    p.canvas.draw()
                 }
             });
         });

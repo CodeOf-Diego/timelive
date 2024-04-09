@@ -1,38 +1,58 @@
+import { p } from "../../Project";
+import CanvasElements from "./CanvasElements";
+
+/* Handles the drawing of the data inside the canvas */
 export default class Canvas {
     constructor() {
         this.separation = 40;
+        this.loadProject()  // for now it is assumed this works on a single constant project
     }
+    
+    /** When opening an existing or a new project binds all the CanvasElements to each respective element */
+    loadProject() {
+        this.cElements = new CanvasElements()
+    }
+
+
+
+
+/**
+ * All'apertura di un progetto prima vengono caricate le risorse poi lanciata la draw
+ * ad ogni apertura tutti i canvaselements vanno sovrascritti con gli elements presenti nella nuova apertura
+ * 
+ * ad ogni aggiunta o rimozione va aggiornata la lista degli elementi presenti
+ * 
+ * ad ogni draw vanno ciclati tutti gli elementi dom che sono presenti e ridisegnati
+ * 
+ * 
+ * alla aggiunta l'elemento aggiunto  
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
+
+
+
+
+
 
     draw() {
         //redraw graph with the new element
-    }
-
-
-    /** Find positions of all currently placed elements and add offset for new position */
-    newPosition() {
-        let pos = [], found = false,
-        container = $('.container').offset().left;
-        let max = container;
-
-        $('.element').each(function() {
-            max = Math.max(max, $(this).offset().left);
-            found = true
-        });
-
-
-//        console.log(pos, container, max, found)
-        return max - container + (found ? this.separation : 0);
+        this.cElements.update();
     }
 
 
     addElement(elementInput) {
-        let style = 'style="left:'+ this.newPosition().toString() +'px"';
-        let html = `<div class="element" data-id="`+elementInput.ID+`" `+ style +`></div>`;
-        $('.container').append(html);
-        $(`.element[data-id='`+elementInput.ID+`']`).click((e) => {
+        CanvasElements.add(elementInput)
+        /* $(`.element[data-id='`+elementInput.ID+`']`).click((e) => {
             p.elementInput.open(parseInt(e.currentTarget.dataset['id']));
             p.elementInput.load();
-        });
+        }); */
         this.draw();
     }
 }

@@ -26,7 +26,7 @@ export default class Element {
   }
   /* Get the description attribute */
   getDescription(timeX) {
-    return this.name.get(timeX);
+    return this.description.get(timeX);
   }
 
   /* Set the img attribute */

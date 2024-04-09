@@ -6,6 +6,7 @@ import Keyboard from "./modules/Keyboard/Keyboard";
 import Focus from "./modules/Focus/Focus";
 import Canvas from "./modules/Canvas/Canvas";
 import ElementInput from "./modules/Entities/ElementInput";
+import Element from "./modules/Entities/Element";
 
 class Project {
     constructor() {
@@ -40,6 +41,7 @@ class Project {
         this.focus = new Focus();
         this.canvas = new Canvas();
 
+         /** @type {Element[]} */
         this.elements = [null];
         this.bonds = [];
 

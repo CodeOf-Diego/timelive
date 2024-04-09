@@ -113,6 +113,7 @@ class TypeX {
 		}
 	}
 
+	/* Duplicates the data and returns a copy */
 	duplicate() {
 		return jQuery.extend(true, new TypeX, this)
 	}
@@ -145,13 +146,13 @@ class ControllerProjectInfo extends ControllerGlobal{
     controllers() {
         $(document).ready(function(){
             $('#infoLength').change((e) => {
-                if (Project_p.projectInfo.controller.active) {
-                    Project_p.projectInfo.length.set(parseInt($(Project_p.projectInfo.el).val()))
-                    if (Project_p.globalTime.get() > Project_p.projectInfo.length.get()) {
-                        Project_p.globalTime.set(Project_p.projectInfo.length.get());
+                if (p.projectInfo.controller.active) {
+                    p.projectInfo.length.set(parseInt($(p.projectInfo.el).val()))
+                    if (p.globalTime.get() > p.projectInfo.length.get()) {
+                        p.globalTime.set(p.projectInfo.length.get());
 
                     }
-                    Project_p.timeline.draw();
+                    p.timeline.draw();
                 }
             });
         });
@@ -186,7 +187,7 @@ class ProjectInfo {
     }
 
     new() {
-        let T = Project_p.globalTime;
+        let T = p.globalTime;
         this.name = "New Project";
         this.length.set(10);
         this.timeType = 'episode';
@@ -198,18 +199,18 @@ class ProjectInfo {
     load() {
         $('#boxInfo').show();
         this.writeVariables()
-        Project_p.focus.set('info');
+        p.focus.set('info');
     }
 
     unload() {
         $('#boxInfo').hide();
-        Project_p.focus.set('main');
+        p.focus.set('main');
         //refresh
 
     }
 
     writeVariables() {
-        let T = Project_p.globalTime;
+        let T = p.globalTime;
         $('#infoName').val(this.name);
         $('#infoLength').val(this.length.get());
         $('#infoDescription').val(this.description.get(T));
@@ -228,16 +229,16 @@ class ControllerToolbox extends ControllerGlobal{
     }
 
     newElement() {
-        if (Project_p.toolbox.controller.active) {
-            Project_p.elementInput.new();
-            Project_p.elementInput.load();
+        if (p.toolbox.controller.active) {
+            p.elementInput.new();
+            p.elementInput.load();
         }
     }
 
 
     controllers() {
         $(document).ready(function(){
-            $('#newElement').on('click',Project_p.toolbox.controller.newElement);
+            $('#newElement').on('click',p.toolbox.controller.newElement);
         });
     }
 
@@ -279,9 +280,9 @@ class ControllerTimeline extends ControllerGlobal{
     $(document).ready(function(){
 
       $('#timeline').change(() => {
-        if (Project_p.timeline.controller.active) {
-          Project_p.globalTime.set(parseInt($(Project_p.timeline.el).val()));
-          Project_p.timeline.draw();
+        if (p.timeline.controller.active) {
+          p.globalTime.set(parseInt($(p.timeline.el).val()));
+          p.timeline.draw();
         }
       });
     });
@@ -302,8 +303,8 @@ class Timeline {
     draw() {
         // update graphics of the timeline
         $('#timeline option').remove();
-        let T = Project_p.globalTime;
-        for (let i = 0; i <= Project_p.projectInfo.length.get() ; i++) {
+        let T = p.globalTime;
+        for (let i = 0; i <= p.projectInfo.length.get() ; i++) {
             $("#timeline").append(new Option(i.toString(), i.toString(),false, T.get() === i));
         }
         $('#timeline')
@@ -335,24 +336,24 @@ class Keyboard {
     }
 
     registerKey(e) {
-        if (Project_p.keyboard.last_timeout !== 0) {
-            clearTimeout(Project_p.keyboard.last_timeout);
+        if (p.keyboard.last_timeout !== 0) {
+            clearTimeout(p.keyboard.last_timeout);
         }
-        switch (Project_p.focus.get()) {
-            case "main": Project_p.keyboard.mainControls(e); break;
-            case "info": Project_p.keyboard.infoControls(e); break;
-            case "element": Project_p.keyboard.elementControls(e); break;
+        switch (p.focus.get()) {
+            case "main": p.keyboard.mainControls(e); break;
+            case "info": p.keyboard.infoControls(e); break;
+            case "element": p.keyboard.elementControls(e); break;
         }
-        Project_p.keyboard.last_timeout = setTimeout(Project_p.keyboard.getWord, Project_p.keyboard.countdown);
-        Project_p.keyboard.keyList.push(e.key);
+        p.keyboard.last_timeout = setTimeout(p.keyboard.getWord, p.keyboard.countdown);
+        p.keyboard.keyList.push(e.key);
     }
 
     getWord() {
-        if (Project_p.keyboard.keyList.length > 0) {
-            let keyword = Project_p.keyboard.keyList.join("");
-            Project_p.keyboard.keyList = [];
-            if (Project_p.keyboard.debug)
-                Project_p.keyboard.search(keyword);
+        if (p.keyboard.keyList.length > 0) {
+            let keyword = p.keyboard.keyList.join("");
+            p.keyboard.keyList = [];
+            if (p.keyboard.debug)
+                p.keyboard.search(keyword);
         }
     }
 
@@ -366,23 +367,25 @@ class Keyboard {
     mainControls(e) {
         switch (e.key) {
             case 'n':
-                Project_p.elementInput.new();
-                Project_p.elementInput.load();
+                p.elementInput.new();
+                p.elementInput.load();
                 break;
             case 's':
-                Project_p.projectInfo.new();
-                Project_p.projectInfo.load();
+                p.projectInfo.new();
+                p.projectInfo.load();
                 break;
             case 'ArrowLeft':
-                if (Project_p.globalTime.get() > 0) {
-                    Project_p.globalTime.set(Project_p.globalTime.get() - 1);
-                    Project_p.timeline.draw();
+                if (p.globalTime.get() > 0) {
+                    p.globalTime.set(p.globalTime.get() - 1);
+                    p.timeline.draw();
+                    p.canvas.draw();
                 }
                 break;
             case 'ArrowRight':
-                if (Project_p.globalTime.get() < Project_p.projectInfo.length.get()) {
-                    Project_p.globalTime.set(Project_p.globalTime.get() + 1);
-                    Project_p.timeline.draw();
+                if (p.globalTime.get() < p.projectInfo.length.get()) {
+                    p.globalTime.set(p.globalTime.get() + 1);
+                    p.timeline.draw();
+                    p.canvas.draw();
                 }
                 break;
         }
@@ -391,7 +394,7 @@ class Keyboard {
     infoControls(e) {
         switch (e.key) {
             case 'Escape':
-                Project_p.projectInfo.unload();
+                p.projectInfo.unload();
                 break;
         }
     }
@@ -399,7 +402,7 @@ class Keyboard {
     elementControls(e) {
         switch (e.key) {
             case 'Escape':
-                Project_p.elementInput.unload();
+                p.elementInput.unload();
                 break;
                 // TODO FIX enter doesn't save the element
             case 'Enter':
@@ -439,61 +442,22 @@ class Focus {
     updateControllers() {
         switch (this.focus) {
             case 'main':
-                Project_p.toolbox.controller.enable();
-                Project_p.projectInfo.controller.disable();
+                p.toolbox.controller.enable();
+                p.projectInfo.controller.disable();
                 break;
             case 'element':
-                Project_p.toolbox.controller.enable();
-                Project_p.projectInfo.controller.disable();
+                p.toolbox.controller.enable();
+                p.projectInfo.controller.disable();
                 break;
             case 'info':
-                Project_p.toolbox.controller.disable();
-                Project_p.projectInfo.controller.enable();
+                p.toolbox.controller.disable();
+                p.projectInfo.controller.enable();
                 break;
 
 
         }
     }
 
-}
-;// CONCATENATED MODULE: ./src/assets/js/modules/Canvas/Canvas.js
-class Canvas {
-    constructor() {
-        this.separation = 40;
-    }
-
-    draw() {
-        //redraw graph with the new element
-    }
-
-
-    /** Find positions of all currently placed elements and add offset for new position */
-    newPosition() {
-        let pos = [], found = false,
-        container = $('.container').offset().left;
-        let max = container;
-
-        $('.element').each(function() {
-            max = Math.max(max, $(this).offset().left);
-            found = true
-        });
-
-
-//        console.log(pos, container, max, found)
-        return max - container + (found ? this.separation : 0);
-    }
-
-
-    addElement(elementInput) {
-        let style = 'style="left:'+ this.newPosition().toString() +'px"';
-        let html = `<div class="element" data-id="`+elementInput.ID+`" `+ style +`></div>`;
-        $('.container').append(html);
-        $(`.element[data-id='`+elementInput.ID+`']`).click((e) => {
-            p.elementInput.open(parseInt(e.currentTarget.dataset['id']));
-            p.elementInput.load();
-        });
-        this.draw();
-    }
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/Element.js
 
@@ -524,7 +488,7 @@ class Element {
   }
   /* Get the description attribute */
   getDescription(timeX) {
-    return this.name.get(timeX);
+    return this.description.get(timeX);
   }
 
   /* Set the img attribute */
@@ -569,10 +533,11 @@ class ElementInputController extends ControllerGlobal{
         $(document).ready(function(){
             $('#saveElement').click(() => {
 
-                if (Project_p.elementInput.controller.active) {
-                    Project_p.elementInput.readVariables();
-                    Project_p.elementInput.save();
-                    Project_p.elementInput.unload();
+                if (p.elementInput.controller.active) {
+                    p.elementInput.readVariables();
+                    p.elementInput.save();
+                    p.elementInput.unload();
+                    p.canvas.draw()
                 }
             });
         });
@@ -592,26 +557,28 @@ class ElementInputController extends ControllerGlobal{
     constructor() {
         super();
         this.controller = new ElementInputController();
+        this.isNewElement = false;
     }
 
     new() {
-        let T = Project_p.globalTime;
+        let T = p.globalTime;
         this.setName('',T);
         this.setDescription('',T);
-        this.setStart(0,T);
+        this.setStart(p.globalTime.get(),T);
         this.setEnd(0,T);
         this.setImg('',T);
         this.ID = 0;
     }
 
+    /* Open an element input interface, if it's an existing element the corresponding data is passed*/
     open(idOpen) {
-        if (Project_p.elements[parseInt(idOpen)] !== undefined) {
+        if (p.elements[parseInt(idOpen)] !== undefined) {
             this.ID = idOpen;
-            this.name = Project_p.elements[idOpen].name.duplicate();
-            this.description = Project_p.elements[idOpen].description.duplicate();
-            this.start = Project_p.elements[idOpen].start.duplicate();
-            this.end = Project_p.elements[idOpen].end.duplicate();
-            this.img = Project_p.elements[idOpen].img.duplicate();
+            this.name = p.elements[idOpen].name.duplicate();
+            this.description = p.elements[idOpen].description.duplicate();
+            this.start = p.elements[idOpen].start.duplicate();
+            this.end = p.elements[idOpen].end.duplicate();
+            this.img = p.elements[idOpen].img.duplicate();
         }
         else {
             this.new();
@@ -622,19 +589,20 @@ class ElementInputController extends ControllerGlobal{
     load() {
         $('#boxInputElement').show();
         this.writeVariables()
-        Project_p.focus.set('element');
+        p.focus.set('element');
     }
 
     unload() {
         $('#boxInputElement').hide();
-        Project_p.focus.set('main');
-        if (this.newElement)
-            Project_p.canvas.addElement(this);
+        p.focus.set('main');
+        if (this.isNewElement)
+            p.canvas.addElement(this);
+            this.isNewElement = false
         //refresh
     }
 
     writeVariables() {
-        let T = Project_p.globalTime;
+        let T = p.globalTime;
         $('#elementName').val(this.getName(T)).focus();
         $('#elementDescription').val(this.getDescription(T));
         $('#elementStart').val(this.getStart(T));
@@ -643,7 +611,7 @@ class ElementInputController extends ControllerGlobal{
     }
 
     readVariables() {
-        let T = Project_p.globalTime;
+        let T = p.globalTime;
         this.setName($('#elementName').val(),T);
         this.setDescription($('#elementDescription').val(),T);
         this.setStart($('#elementStart').val(),T);
@@ -654,8 +622,8 @@ class ElementInputController extends ControllerGlobal{
     /* New elements are appended at the end of the public array,
        In existing elements are updated only the attributes with changed values */
     save() {
-        let T = Project_p.globalTime;
-        this.newElement = this.ID === 0;
+        let T = p.globalTime;
+        this.isNewElement = this.ID === 0;
         if(this.ID === 0) {
             let newElement = new Element();
             newElement.setName(this.getName(T),T);
@@ -663,10 +631,10 @@ class ElementInputController extends ControllerGlobal{
             newElement.setStart(this.getStart(T),T);
             newElement.setEnd(this.getEnd(T),T);
             newElement.setImg(this.getImg(T),T);
-            this.ID = Project_p.elements.push(newElement) - 1;
+            this.ID = p.elements.push(newElement) - 1;
         }
         else {
-            let currElement = Project_p.elements[this.ID];
+            let currElement = p.elements[this.ID];
             if (currElement.getName(T) !== this.getName(T))
                 currElement.setName(this.getName(T), T)
             if (currElement.getDescription(T) !== this.getDescription(T))
@@ -680,7 +648,175 @@ class ElementInputController extends ControllerGlobal{
         }
     }
 }
+;// CONCATENATED MODULE: ./src/assets/js/modules/Canvas/CanvasElements.js
+
+
+
+/**
+ * Class that connects the element to their corresponding 'DOM elements' and handles all the graphical updates
+ */
+class CanvasElements {
+    
+    /** Loads all the drawn elements into memory */
+    constructor() {
+        /* Search and loads in memory the DOM elements to be used later */
+        this.pElements = p.elements;
+        this.elements = {};
+        document.querySelectorAll('.element').forEach(element => {
+            this.elements[element.getAttribute('data-id')] = element;
+        });
+    }
+
+    /** Updates the graphical properties of the elements for the current Time */
+    update() {
+        
+        // loops all elements
+            // for each element check if in the new requested time there are difference
+                // in which case redraws the differences
+
+            for (let ID in this.elements) {
+//            this.elements.forEach((element, ID) => {
+                this.#updateElement(parseInt(ID))
+
+        }
+    }
+
+    /* Main element drawing function */
+    #updateElement(ID) {
+        let T = p.globalTime
+
+        let element = this.elements[ID]
+
+        // if the actual output of an element is different from the data corresponding the new time the element's attribute gets updated
+        
+        // image
+        
+        // title
+        if (element.querySelector('.name').innerHTML !== p.elements[ID].getName(T)) {
+            element.querySelector('.name').innerHTML = p.elements[ID].getName(T)
+        }
+        
+        //description
+        if (element.querySelector('.description').innerHTML !== p.elements[ID].getDescription(T)) {
+            element.querySelector('.description').innerHTML = p.elements[ID].getDescription(T)
+        }
+        
+        // shows the element only in the range of existence (possible performance improvements)
+        // not sure if start and end should be 1 dimensional, i reasoned on this 3 years ago
+        let start = p.elements[ID].getStart(T)
+        let end = p.elements[ID].getEnd(T)
+        element.style.scale = 
+            (start === null || T.get() < start) || 
+            (end !== null && end != 0 && T.get() > end) 
+        ? "0" : "1"
+    }
+
+    /** Find positions of all currently placed elements and add offset for new position */
+    static newPosition() {
+        let pos = [], found = false,
+        container = $('.container').offset().left;
+        let max = container;
+
+        $('.element').each(function() {
+            max = Math.max(max, $(this).offset().left);
+            found = true
+        });
+
+
+    //        console.log(pos, container, max, found)
+        return max - container + (found ? p.canvas.separation : 0);
+    }
+
+
+    /** Adds an element to the list of drawn elements 
+     * @param {ElementInput} elementInput
+    */
+    static add(elementInput) {
+        let style = 'style="left:'+ CanvasElements.newPosition().toString() +'px"';
+        let html = `<div class="element" data-id="${elementInput.ID}" data-start="${elementInput.getStart(p.globalTime)}" data-start="${elementInput.getEnd(p.globalTime)}"  ${style}>
+        <div class="name"></div>                
+        <div class="description"></div>
+        <div class="start"></div>
+        <div class="end"></div>
+        </div>`;
+        $('.container').append(html);
+        
+        /** Finds the element for the just added html */
+        let element = document.querySelector('.element[data-id="'+elementInput.ID+'"]');
+        /** Makes the new component interactable */
+        element.addEventListener("click", CanvasElements.onClick); 
+        /** Adds the element for the new element in the known list */
+        p.canvas.cElements.elements[element.getAttribute('data-id')] = element;
+
+    }
+
+    static onClick(e) {
+        p.elementInput.open(parseInt(e.currentTarget.dataset['id']));
+        p.elementInput.load();
+    }
+}
+
+;// CONCATENATED MODULE: ./src/assets/js/modules/Canvas/Canvas.js
+
+
+
+/* Handles the drawing of the data inside the canvas */
+class Canvas {
+    constructor() {
+        this.separation = 40;
+        this.loadProject()  // for now it is assumed this works on a single constant project
+    }
+    
+    /** When opening an existing or a new project binds all the CanvasElements to each respective element */
+    loadProject() {
+        this.cElements = new CanvasElements()
+    }
+
+
+
+
+/**
+ * All'apertura di un progetto prima vengono caricate le risorse poi lanciata la draw
+ * ad ogni apertura tutti i canvaselements vanno sovrascritti con gli elements presenti nella nuova apertura
+ * 
+ * ad ogni aggiunta o rimozione va aggiornata la lista degli elementi presenti
+ * 
+ * ad ogni draw vanno ciclati tutti gli elementi dom che sono presenti e ridisegnati
+ * 
+ * 
+ * alla aggiunta l'elemento aggiunto  
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
+
+
+
+
+
+
+    draw() {
+        //redraw graph with the new element
+        this.cElements.update();
+    }
+
+
+    addElement(elementInput) {
+        CanvasElements.add(elementInput)
+        /* $(`.element[data-id='`+elementInput.ID+`']`).click((e) => {
+            p.elementInput.open(parseInt(e.currentTarget.dataset['id']));
+            p.elementInput.load();
+        }); */
+        this.draw();
+    }
+}
 ;// CONCATENATED MODULE: ./src/assets/js/Project.js
+
 
 
 
@@ -723,6 +859,7 @@ class Project {
         this.focus = new Focus();
         this.canvas = new Canvas();
 
+         /** @type {Element[]} */
         this.elements = [null];
         this.bonds = [];
 
@@ -756,14 +893,13 @@ class Project {
 
 }
 
-const Project_p = new Project();
+const p = new Project();
 
 
 ;// CONCATENATED MODULE: ./src/assets/js/index.js
 // Import modules
 
 
-
-Project_p.new();
+p.new();
 /******/ })()
 ;

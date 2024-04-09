@@ -63,12 +63,14 @@ export default class Keyboard {
                 if (p.globalTime.get() > 0) {
                     p.globalTime.set(p.globalTime.get() - 1);
                     p.timeline.draw();
+                    p.canvas.draw();
                 }
                 break;
             case 'ArrowRight':
                 if (p.globalTime.get() < p.projectInfo.length.get()) {
                     p.globalTime.set(p.globalTime.get() + 1);
                     p.timeline.draw();
+                    p.canvas.draw();
                 }
                 break;
         }
