@@ -1,4 +1,5 @@
 import { p } from "../../Project";
+import ElementInputController from "../Entities/ElementInputController";
 
 /**
  * Handles keyboard interactions
@@ -54,6 +55,7 @@ export default class Keyboard {
             case 'n':
                 p.elementInput.new();
                 p.elementInput.load();
+                e.preventDefault();
                 break;
             case 's':
                 p.projectInfo.new();
@@ -91,7 +93,8 @@ export default class Keyboard {
                 break;
                 // TODO FIX enter doesn't save the element
             case 'Enter':
-                $('#newElement').click();
+                e.preventDefault()
+                ElementInputController.onClick();
                 break;
         }
     }

@@ -312,7 +312,34 @@ class Timeline {
     }
 
 }
+;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/ElementInputController.js
+
+
+
+class ElementInputController extends ControllerGlobal{
+    constructor() {
+        super();
+        this.controllers();
+    }
+
+    controllers() {
+        $(document).ready(function(){
+            $('#saveElement').click(ElementInputController.onClick);
+        });
+    }
+
+    static onClick() {
+        if (p.elementInput.controller.active) {
+            p.elementInput.readVariables();
+            p.elementInput.save();
+            p.elementInput.unload();
+            p.canvas.draw()
+        }
+    }
+
+}
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Keyboard/Keyboard.js
+
 
 
 /**
@@ -369,6 +396,7 @@ class Keyboard {
             case 'n':
                 p.elementInput.new();
                 p.elementInput.load();
+                e.preventDefault();
                 break;
             case 's':
                 p.projectInfo.new();
@@ -406,7 +434,8 @@ class Keyboard {
                 break;
                 // TODO FIX enter doesn't save the element
             case 'Enter':
-                $('#newElement').click();
+                e.preventDefault()
+                ElementInputController.onClick();
                 break;
         }
     }
@@ -519,31 +548,6 @@ class Element {
   }
 }
 
-;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/ElementInputController.js
-
-
-
-class ElementInputController extends ControllerGlobal{
-    constructor() {
-        super();
-        this.controllers();
-    }
-
-    controllers() {
-        $(document).ready(function(){
-            $('#saveElement').click(() => {
-
-                if (p.elementInput.controller.active) {
-                    p.elementInput.readVariables();
-                    p.elementInput.save();
-                    p.elementInput.unload();
-                    p.canvas.draw()
-                }
-            });
-        });
-    }
-
-}
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/ElementInput.js
 
 
