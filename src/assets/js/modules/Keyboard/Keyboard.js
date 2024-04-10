@@ -94,7 +94,7 @@ export default class Keyboard {
                 // TODO FIX enter doesn't save the element
             case 'Enter':
                 e.preventDefault()
-                ElementInputController.onClick();
+                ElementInputController.onSave();
                 break;
         }
     }

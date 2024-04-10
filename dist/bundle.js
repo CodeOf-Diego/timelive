@@ -312,7 +312,43 @@ class Timeline {
     }
 
 }
+;// CONCATENATED MODULE: ./src/assets/js/modules/ImageLoader/ImageLoader.js
+
+
+class ImageLoader {
+
+    // random images
+    // https://toppng.com/uploads/preview/question-marks-png-11552247920xwjr8vuvf8.png
+    // https://photographylife.com/wp-content/uploads/2020/03/Ultra-Wide-Angle-Panoramas-1.jpg
+    // https://static.kodami.it/wp-content/uploads/sites/31/2021/03/iStock-140469307.jpg
+    constructor () {
+        this.urls = []
+    }
+
+    /** when opening an existing project looks for all the url in the various places and loads them in the url array, while loading each single image */
+    loadBatch() {
+
+    }
+
+    /** Adds a new url to the list of images to be loaded and loads it */
+    static addURL(URL) {
+
+        if (URL != "" && !p.imageLoader.urls.includes(URL)) {
+            p.imageLoader.urls.push(URL)
+            ImageLoader.#getImage(URL)
+        }
+        
+    }
+
+    /** Requests a single image */
+    static #getImage(URL) {
+        let img = new Image();
+        img.src = URL;
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/ElementInputController.js
+
 
 
 
@@ -324,19 +360,20 @@ class ElementInputController extends ControllerGlobal{
 
     controllers() {
         $(document).ready(function(){
-            $('#saveElement').click(ElementInputController.onClick);
+            $('#saveElement').click(ElementInputController.onSave);
         });
     }
 
-    static onClick() {
+    /** Elaborates the data present in the input form */
+    static onSave() {
         if (p.elementInput.controller.active) {
             p.elementInput.readVariables();
             p.elementInput.save();
+            ImageLoader.addURL(p.elementInput.getImg(p.globalTime))
             p.elementInput.unload();
             p.canvas.draw()
         }
     }
-
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Keyboard/Keyboard.js
 
@@ -435,7 +472,7 @@ class Keyboard {
                 // TODO FIX enter doesn't save the element
             case 'Enter':
                 e.preventDefault()
-                ElementInputController.onClick();
+                ElementInputController.onSave();
                 break;
         }
     }
@@ -704,7 +741,12 @@ class CanvasElements {
         if (element.querySelector('.description').innerHTML !== p.elements[ID].getDescription(T)) {
             element.querySelector('.description').innerHTML = p.elements[ID].getDescription(T)
         }
+
+        // image
+        if (element.style.backgroundImage !== "url('"+p.elements[ID].getImg(T)+"')")
+            element.style.backgroundImage = "url('"+p.elements[ID].getImg(T)+"')";
         
+
         // shows the element only in the range of existence (possible performance improvements)
         // not sure if start and end should be 1 dimensional, i reasoned on this 3 years ago
         let start = p.elements[ID].getStart(T)
@@ -713,6 +755,7 @@ class CanvasElements {
             (start === null || T.get() < start) || 
             (end !== null && end != 0 && T.get() > end) 
         ? "0" : "1"
+
     }
 
     /** Find positions of all currently placed elements and add offset for new position */
@@ -733,15 +776,16 @@ class CanvasElements {
 
 
     /** Adds an element to the list of drawn elements 
+     * this could probably be optimized by passing to react/vue/similar
      * @param {ElementInput} elementInput
     */
     static add(elementInput) {
         let style = 'style="left:'+ CanvasElements.newPosition().toString() +'px"';
-        let html = `<div class="element" data-id="${elementInput.ID}" data-start="${elementInput.getStart(p.globalTime)}" data-start="${elementInput.getEnd(p.globalTime)}"  ${style}>
-        <div class="name"></div>                
-        <div class="description"></div>
-        <div class="start"></div>
-        <div class="end"></div>
+        let html = `<div class="element"  ${style}
+        data-id="${elementInput.ID}" 
+        >
+            <div class="name"></div>                
+            <div class="description"></div>
         </div>`;
         $('.container').append(html);
         
@@ -830,6 +874,7 @@ class Canvas {
 
 
 
+
 class Project {
     constructor() {
         this.globalTime = new TimeX();
@@ -842,6 +887,7 @@ class Project {
         this.settings;
         this.keyboard;
         this.focus;
+        this.imageLoader;
 
         this.elements;
         this.bonds;
@@ -862,6 +908,8 @@ class Project {
         this.keyboard = new Keyboard();
         this.focus = new Focus();
         this.canvas = new Canvas();
+        this.imageLoader = new ImageLoader();
+
 
          /** @type {Element[]} */
         this.elements = [null];

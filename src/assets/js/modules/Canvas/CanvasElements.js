@@ -49,7 +49,12 @@ export default class CanvasElements {
         if (element.querySelector('.description').innerHTML !== p.elements[ID].getDescription(T)) {
             element.querySelector('.description').innerHTML = p.elements[ID].getDescription(T)
         }
+
+        // image
+        if (element.style.backgroundImage !== "url('"+p.elements[ID].getImg(T)+"')")
+            element.style.backgroundImage = "url('"+p.elements[ID].getImg(T)+"')";
         
+
         // shows the element only in the range of existence (possible performance improvements)
         // not sure if start and end should be 1 dimensional, i reasoned on this 3 years ago
         let start = p.elements[ID].getStart(T)
@@ -58,6 +63,7 @@ export default class CanvasElements {
             (start === null || T.get() < start) || 
             (end !== null && end != 0 && T.get() > end) 
         ? "0" : "1"
+
     }
 
     /** Find positions of all currently placed elements and add offset for new position */
@@ -78,15 +84,16 @@ export default class CanvasElements {
 
 
     /** Adds an element to the list of drawn elements 
+     * this could probably be optimized by passing to react/vue/similar
      * @param {ElementInput} elementInput
     */
     static add(elementInput) {
         let style = 'style="left:'+ CanvasElements.newPosition().toString() +'px"';
-        let html = `<div class="element" data-id="${elementInput.ID}" data-start="${elementInput.getStart(p.globalTime)}" data-start="${elementInput.getEnd(p.globalTime)}"  ${style}>
-        <div class="name"></div>                
-        <div class="description"></div>
-        <div class="start"></div>
-        <div class="end"></div>
+        let html = `<div class="element"  ${style}
+        data-id="${elementInput.ID}" 
+        >
+            <div class="name"></div>                
+            <div class="description"></div>
         </div>`;
         $('.container').append(html);
         

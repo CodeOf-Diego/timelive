@@ -5,9 +5,17 @@
     background: lightblue;
     transition: all .2s;
     position: absolute;
+    
+    overflow: hidden;
+    background-image: url();
+    background-size: cover;
+    background-position: center;
 }
 .element:hover {
     /*transform: translate(100px,100px);*/
+}
+.element img {
+    max-width: ;
 }
 
 .container {

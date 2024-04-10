@@ -7,6 +7,7 @@ import Focus from "./modules/Focus/Focus";
 import Canvas from "./modules/Canvas/Canvas";
 import ElementInput from "./modules/Entities/ElementInput";
 import Element from "./modules/Entities/Element";
+import ImageLoader from "./modules/ImageLoader/ImageLoader";
 
 class Project {
     constructor() {
@@ -20,6 +21,7 @@ class Project {
         this.settings;
         this.keyboard;
         this.focus;
+        this.imageLoader;
 
         this.elements;
         this.bonds;
@@ -40,6 +42,8 @@ class Project {
         this.keyboard = new Keyboard();
         this.focus = new Focus();
         this.canvas = new Canvas();
+        this.imageLoader = new ImageLoader();
+
 
          /** @type {Element[]} */
         this.elements = [null];
