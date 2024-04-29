@@ -1,5 +1,5 @@
 import TimeX from "./TimeX";
-import ProjectInfo from "./modules/ProjectInfo/ProjectInfo";
+import ProjectInfo from "./modules/ProjectSettings/ProjectSettings";
 import Toolbox from "./modules/Toolbox/Toolbox";
 import Timeline from "./modules/Timeline/Timeline";
 import Keyboard from "./modules/Keyboard/Keyboard";

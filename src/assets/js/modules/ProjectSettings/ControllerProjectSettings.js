@@ -1,7 +1,7 @@
 import ControllerGlobal from "../Controllers/ControllerGlobal";
 import { p } from "../../Project";
 
-export default class ControllerProjectInfo extends ControllerGlobal{
+export default class ControllerProjectSettings extends ControllerGlobal{
     constructor() {
         super();
         this.controllers();
@@ -20,5 +20,9 @@ export default class ControllerProjectInfo extends ControllerGlobal{
                 }
             });
         });
+    }
+
+    show() {
+        
     }
 }

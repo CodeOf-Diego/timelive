@@ -133,11 +133,11 @@ class ControllerGlobal {
   }
 }
 
-;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectInfo/ControllerProjectInfo.js
+;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectSettings/ControllerProjectSettings.js
 
 
 
-class ControllerProjectInfo extends ControllerGlobal{
+class ControllerProjectSettings extends ControllerGlobal{
     constructor() {
         super();
         this.controllers();
@@ -157,8 +157,12 @@ class ControllerProjectInfo extends ControllerGlobal{
             });
         });
     }
+
+    show() {
+        
+    }
 }
-;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectInfo/ProjectInfo.js
+;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectSettings/ProjectSettings.js
 
 
 
@@ -182,7 +186,7 @@ class ProjectInfo {
         this.tags;
         this.description = new TypeX();
         this.bgImage = new TypeX();
-        this.controller = new ControllerProjectInfo();
+        this.controller = new ControllerProjectSettings();
         this.el = '#infoLength'
     }
 
@@ -218,6 +222,53 @@ class ProjectInfo {
     }
 
 }
+
+
+
+
+/*
+
+when opening for the first time a new untitled project is created with default autosave after every 30 sec
+
+
+
+
+info diventa settings
+
+
+
+project saving options
+
+project settings contiente
+let T = p.globalTime;
+this.name = "New Project";
+this.length.set(10);
+this.timeType = 'episode';
+this.tags = [];
+this.description.set("", T);
+this.bgImage.set("", T);
+
+- doAutosave (default yes, updates the locally stored data of the project after every edit)
+- autosaveDuration (default 30 sec, used only if doAutosave is on)
+- openByDefault (if on the project will autoamtically be opened. If multiple project have this option the lates one by modification date will be opened)
+
+
+
+menu settings
+
+project settings
+...  
+
+then
+- save locally (saves in the local storage)
+- export (to allow outside storage)
+- import new project (by link or by raw content)
+
+
+list of other projects (excluding the current one)
+- load project, loads into memory all the project informations for the selected project
+- delete (deletes all the data of the selected project. if all local projects are deleted a new one is created by default)
+*/
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Toolbox/ControllerToolbox.js
 
 
