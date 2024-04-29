@@ -29,15 +29,15 @@ export default class Focus {
         switch (this.focus) {
             case 'main':
                 p.toolbox.controller.enable();
-                p.projectInfo.controller.disable();
+                p.projectSettings.controller.disable();
                 break;
             case 'element':
                 p.toolbox.controller.enable();
-                p.projectInfo.controller.disable();
+                p.projectSettings.controller.disable();
                 break;
             case 'info':
                 p.toolbox.controller.disable();
-                p.projectInfo.controller.enable();
+                p.projectSettings.controller.enable();
                 break;
 
 

@@ -40,13 +40,13 @@ import { p } from "../../Project";
 
     /* Load the element input box, showing the variables */
     load() {
-        $('#boxInputElement').show();
+        this.controller.boxInputElement.show()
         this.writeVariables()
         p.focus.set('element');
     }
-
+    
     unload() {
-        $('#boxInputElement').hide();
+        this.controller.boxInputElement.hide()
         p.focus.set('main');
         if (this.isNewElement)
             p.canvas.addElement(this);
@@ -54,22 +54,25 @@ import { p } from "../../Project";
         //refresh
     }
 
+    /** Writes the variables from the data into the web page */
     writeVariables() {
         let T = p.globalTime;
-        $('#elementName').val(this.getName(T)).focus();
-        $('#elementDescription').val(this.getDescription(T));
-        $('#elementStart').val(this.getStart(T));
-        $('#elementEnd').val(this.getEnd(T));
-        $('#elementImg').val(this.getImg(T));
+        this.controller.elementName.val = this.getName(T);
+        this.controller.elementDescription.val = this.getDescription(T);
+        this.controller.elementStart.val = this.getStart(T);
+        this.controller.elementEnd.val = this.getEnd(T);
+        this.controller.elementImg.val = this.getImg(T);
+        this.controller.elementName.focus()
     }
-
+    
+    /** Reads the variables from the web page and writes it as data */
     readVariables() {
         let T = p.globalTime;
-        this.setName($('#elementName').val(),T);
-        this.setDescription($('#elementDescription').val(),T);
-        this.setStart($('#elementStart').val(),T);
-        this.setEnd($('#elementEnd').val(),T);
-        this.setImg($('#elementImg').val(),T);
+        this.setName(this.controller.elementName.val,T);
+        this.setDescription(this.controller.elementDescription.val,T);
+        this.setStart(this.controller.elementStart.val,T);
+        this.setEnd(this.controller.elementEnd.val,T);
+        this.setImg(this.controller.elementImg.val,T);
     }
 
     /* New elements are appended at the end of the public array,

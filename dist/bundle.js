@@ -119,17 +119,65 @@ class TypeX {
 	}
 }
 
-;// CONCATENATED MODULE: ./src/assets/js/modules/Controllers/ControllerGlobal.js
-class ControllerGlobal {
-  constructor() {
-    this.active = 1;
-  }
+;// CONCATENATED MODULE: ./src/assets/js/modules/Utils/ElementUtils.js
+class ElementUtils {
+    
+    constructor(id = "") {
+        if (id !== "") {
+            this.el = ElementUtils.byID(id)
+        }
+    }
 
+    show() {
+    this.el.style.display = "block"
+    }
+
+    hide() { 
+        this.el.style.display = "none"
+    }
+
+    ready(callback) {
+        document.addEventListener('DOMContentLoaded', callback);
+    }
+
+    /** Adds an onClick event to the main element of the class, if specified */
+    onClick(callback) {
+        this.el.addEventListener('click',callback);
+    }
+    
+    onChange(callback) {
+        this.el.addEventListener('change',callback);
+    }
+    focus() {
+        this.el.focus()
+    }
+
+    static byID(el) {
+        return document.getElementById(el);
+    }
+}
+;// CONCATENATED MODULE: ./src/assets/js/modules/Controllers/ControllerGlobal.js
+
+
+class ControllerGlobal extends ElementUtils {
+  
+  constructor(el = undefined) {
+    super()
+    this.active = 1;
+    if (el !== undefined) {
+      this.bindID(el)
+    }
+  }
+  
   enable() {
     this.active = 1;
   }
   disable() {
     this.active = 0;
+  }
+  
+  bindID(el) {
+    this.el = ElementUtils.byID(el);
   }
 }
 
@@ -137,29 +185,32 @@ class ControllerGlobal {
 
 
 
+
 class ControllerProjectSettings extends ControllerGlobal{
     constructor() {
         super();
-        this.controllers();
+        this.ready(()=>{
+            this.boxInfo = new ElementUtils("boxInfo");
+            this.infoLength = new ElementUtils("infoLength");
+            this.infoName = new ElementUtils("infoName");
+            this.infoDescription = new ElementUtils("infoDescription");
+            this.infoImg = new ElementUtils("infoImg");
+            this.controllers();
+        })
     }
-
+    
     controllers() {
-        $(document).ready(function(){
-            $('#infoLength').change((e) => {
-                if (p.projectInfo.controller.active) {
-                    p.projectInfo.length.set(parseInt($(p.projectInfo.el).val()))
-                    if (p.globalTime.get() > p.projectInfo.length.get()) {
-                        p.globalTime.set(p.projectInfo.length.get());
+        /* not sure what this did */
+        this.infoLength.onChange((e) => {
+            if (p.projectSettings.controller.active) {
+                p.projectSettings.length.set(parseInt($(p.projectSettings.el).val()))
+                if (p.globalTime.get() > p.projectSettings.length.get()) {
+                    p.globalTime.set(p.projectSettings.length.get());
 
-                    }
-                    p.timeline.draw();
                 }
-            });
+                p.timeline.draw();
+            }
         });
-    }
-
-    show() {
-        
     }
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectSettings/ProjectSettings.js
@@ -169,6 +220,7 @@ class ControllerProjectSettings extends ControllerGlobal{
 
 /**
  * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
+ * This class handles the logic while the respective controller binds it to the web elements
  * it has the following functionalities:
  * 
  * new() - set up a new project
@@ -177,7 +229,7 @@ class ControllerProjectSettings extends ControllerGlobal{
  * WIP
  */
 
-class ProjectInfo {
+class ProjectSettings {
 
     constructor() {
         this.name;
@@ -201,24 +253,25 @@ class ProjectInfo {
     }
 
     load() {
-        $('#boxInfo').show();
-        this.writeVariables()
+        this.controller.boxInfo.show()
+
+        /** Handles the drawing of the project settings */
+        let T = p.globalTime;
+        this.controller.infoName.val = this.name;
+        this.controller.infoLength.val = this.length.get();
+        this.controller.infoDescription.val = this.description.get(T);
+        this.controller.infoImg.val = this.bgImage.get(T);
+        
+        //this.el.style("display", "block")
         p.focus.set('info');
     }
 
     unload() {
-        $('#boxInfo').hide();
+        this.controller.boxInfo.hide()
+
         p.focus.set('main');
         //refresh
 
-    }
-
-    writeVariables() {
-        let T = p.globalTime;
-        $('#infoName').val(this.name);
-        $('#infoLength').val(this.length.get());
-        $('#infoDescription').val(this.description.get(T));
-        $('#infoImg').val(this.bgImage.get(T));
     }
 
 }
@@ -273,25 +326,27 @@ list of other projects (excluding the current one)
 
 
 
+
 class ControllerToolbox extends ControllerGlobal{
     constructor() {
         super();
-        this.controllers();
+        this.ready(() =>{
+            this.newElement = new ElementUtils("newElement")
+            this.controllers();
+        })
     }
 
-    newElement() {
+    controllers() {
+        this.newElement.onClick(p.toolbox.controller.addNewElement)
+    }
+    
+    addNewElement() {
         if (p.toolbox.controller.active) {
             p.elementInput.new();
             p.elementInput.load();
         }
     }
 
-
-    controllers() {
-        $(document).ready(function(){
-            $('#newElement').on('click',p.toolbox.controller.newElement);
-        });
-    }
 
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Toolbox/Toolbox.js
@@ -317,6 +372,7 @@ class Toolbox {
 
 
 
+
 /*
 Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
  alla stampa e all'utilizzo dei parametri altrove
@@ -324,19 +380,19 @@ Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
 class ControllerTimeline extends ControllerGlobal{
   constructor() {
     super();
-    this.controllers();
+    this.ready(()=>{
+      this.timeline = new ElementUtils("timeline")
+      this.controllers();
+    })
   }
 
   controllers() {
-    $(document).ready(function(){
-
-      $('#timeline').change(() => {
-        if (p.timeline.controller.active) {
-          p.globalTime.set(parseInt($(p.timeline.el).val()));
-          p.timeline.draw();
-        }
-      });
-    });
+    this.timeline.onChange(() => {
+      if (p.timeline.controller.active) {
+        p.globalTime.set(parseInt(p.timeline.controller.el.val));
+        p.timeline.draw();
+      }
+    })
   }
 }
 
@@ -347,7 +403,6 @@ class ControllerTimeline extends ControllerGlobal{
 class Timeline {
     constructor() {
         this.controller = new ControllerTimeline();
-        this.el = '#timeline';
         this.draw();
     }
 
@@ -355,11 +410,9 @@ class Timeline {
         // update graphics of the timeline
         $('#timeline option').remove();
         let T = p.globalTime;
-        for (let i = 0; i <= p.projectInfo.length.get() ; i++) {
+        for (let i = 0; i <= p.projectSettings.length.get() ; i++) {
             $("#timeline").append(new Option(i.toString(), i.toString(),false, T.get() === i));
         }
-        $('#timeline')
-
     }
 
 }
@@ -403,16 +456,24 @@ class ImageLoader {
 
 
 
+
 class ElementInputController extends ControllerGlobal{
     constructor() {
         super();
-        this.controllers();
+        this.ready(()=>{
+            this.boxInputElement = new ElementUtils("boxInputElement")
+            this.elementName = new ElementUtils("elementName")
+            this.elementDescription = new ElementUtils("elementDescription") 
+            this.elementStart = new ElementUtils("elementStart") 
+            this.elementEnd = new ElementUtils("elementEnd") 
+            this.elementImg = new ElementUtils("elementImg") 
+            this.saveElement = new ElementUtils("saveElement");
+            this.controllers();
+        })
     }
 
     controllers() {
-        $(document).ready(function(){
-            $('#saveElement').click(ElementInputController.onSave);
-        });
+        this.saveElement.onClick(ElementInputController.onSave)
     }
 
     /** Elaborates the data present in the input form */
@@ -487,8 +548,8 @@ class Keyboard {
                 e.preventDefault();
                 break;
             case 's':
-                p.projectInfo.new();
-                p.projectInfo.load();
+                p.projectSettings.new();
+                p.projectSettings.load();
                 break;
             case 'ArrowLeft':
                 if (p.globalTime.get() > 0) {
@@ -498,7 +559,7 @@ class Keyboard {
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.projectInfo.length.get()) {
+                if (p.globalTime.get() < p.projectSettings.length.get()) {
                     p.globalTime.set(p.globalTime.get() + 1);
                     p.timeline.draw();
                     p.canvas.draw();
@@ -510,7 +571,7 @@ class Keyboard {
     infoControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.projectInfo.unload();
+                p.projectSettings.unload();
                 break;
         }
     }
@@ -560,15 +621,15 @@ class Focus {
         switch (this.focus) {
             case 'main':
                 p.toolbox.controller.enable();
-                p.projectInfo.controller.disable();
+                p.projectSettings.controller.disable();
                 break;
             case 'element':
                 p.toolbox.controller.enable();
-                p.projectInfo.controller.disable();
+                p.projectSettings.controller.disable();
                 break;
             case 'info':
                 p.toolbox.controller.disable();
-                p.projectInfo.controller.enable();
+                p.projectSettings.controller.enable();
                 break;
 
 
@@ -679,13 +740,13 @@ class Element {
 
     /* Load the element input box, showing the variables */
     load() {
-        $('#boxInputElement').show();
+        this.controller.boxInputElement.show()
         this.writeVariables()
         p.focus.set('element');
     }
-
+    
     unload() {
-        $('#boxInputElement').hide();
+        this.controller.boxInputElement.hide()
         p.focus.set('main');
         if (this.isNewElement)
             p.canvas.addElement(this);
@@ -693,22 +754,25 @@ class Element {
         //refresh
     }
 
+    /** Writes the variables from the data into the web page */
     writeVariables() {
         let T = p.globalTime;
-        $('#elementName').val(this.getName(T)).focus();
-        $('#elementDescription').val(this.getDescription(T));
-        $('#elementStart').val(this.getStart(T));
-        $('#elementEnd').val(this.getEnd(T));
-        $('#elementImg').val(this.getImg(T));
+        this.controller.elementName.val = this.getName(T);
+        this.controller.elementDescription.val = this.getDescription(T);
+        this.controller.elementStart.val = this.getStart(T);
+        this.controller.elementEnd.val = this.getEnd(T);
+        this.controller.elementImg.val = this.getImg(T);
+        this.controller.elementName.focus()
     }
-
+    
+    /** Reads the variables from the web page and writes it as data */
     readVariables() {
         let T = p.globalTime;
-        this.setName($('#elementName').val(),T);
-        this.setDescription($('#elementDescription').val(),T);
-        this.setStart($('#elementStart').val(),T);
-        this.setEnd($('#elementEnd').val(),T);
-        this.setImg($('#elementImg').val(),T);
+        this.setName(this.controller.elementName.val,T);
+        this.setDescription(this.controller.elementDescription.val,T);
+        this.setStart(this.controller.elementStart.val,T);
+        this.setEnd(this.controller.elementEnd.val,T);
+        this.setImg(this.controller.elementImg.val,T);
     }
 
     /* New elements are appended at the end of the public array,
@@ -929,8 +993,7 @@ class Canvas {
 class Project {
     constructor() {
         this.globalTime = new TimeX();
-        this.projectInfo = new ProjectInfo();
-        this.projectSettings;
+        this.projectSettings = new ProjectSettings();
         this.projectView;
 
         this.toolbox;
@@ -950,8 +1013,8 @@ class Project {
     new() {
         this.globalTime.set(1);
         // Fill all global project variables with newly created data
-        this.projectInfo.new();
-        this.projectSettings = this.createNewProjectSettings();
+        this.projectSettings.new();
+        //this.projectSettings = this.createNewProjectSettings();
         this.projectView = this.createNewProjectView();
 
         this.toolbox = new Toolbox();

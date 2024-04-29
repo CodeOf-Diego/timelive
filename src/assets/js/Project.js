@@ -1,5 +1,5 @@
 import TimeX from "./TimeX";
-import ProjectInfo from "./modules/ProjectSettings/ProjectSettings";
+import ProjectSettings from "./modules/ProjectSettings/ProjectSettings";
 import Toolbox from "./modules/Toolbox/Toolbox";
 import Timeline from "./modules/Timeline/Timeline";
 import Keyboard from "./modules/Keyboard/Keyboard";
@@ -12,8 +12,7 @@ import ImageLoader from "./modules/ImageLoader/ImageLoader";
 class Project {
     constructor() {
         this.globalTime = new TimeX();
-        this.projectInfo = new ProjectInfo();
-        this.projectSettings;
+        this.projectSettings = new ProjectSettings();
         this.projectView;
 
         this.toolbox;
@@ -33,8 +32,8 @@ class Project {
     new() {
         this.globalTime.set(1);
         // Fill all global project variables with newly created data
-        this.projectInfo.new();
-        this.projectSettings = this.createNewProjectSettings();
+        this.projectSettings.new();
+        //this.projectSettings = this.createNewProjectSettings();
         this.projectView = this.createNewProjectView();
 
         this.toolbox = new Toolbox();

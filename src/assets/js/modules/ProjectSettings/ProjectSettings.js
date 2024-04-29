@@ -4,6 +4,7 @@ import ControllerProjectSettings from "./ControllerProjectSettings";
 import { p } from "../../Project";
 /**
  * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
+ * This class handles the logic while the respective controller binds it to the web elements
  * it has the following functionalities:
  * 
  * new() - set up a new project
@@ -12,7 +13,7 @@ import { p } from "../../Project";
  * WIP
  */
 
-export default class ProjectInfo {
+export default class ProjectSettings {
 
     constructor() {
         this.name;
@@ -36,24 +37,25 @@ export default class ProjectInfo {
     }
 
     load() {
-        $('#boxInfo').show();
-        this.writeVariables()
+        this.controller.boxInfo.show()
+
+        /** Handles the drawing of the project settings */
+        let T = p.globalTime;
+        this.controller.infoName.val = this.name;
+        this.controller.infoLength.val = this.length.get();
+        this.controller.infoDescription.val = this.description.get(T);
+        this.controller.infoImg.val = this.bgImage.get(T);
+        
+        //this.el.style("display", "block")
         p.focus.set('info');
     }
 
     unload() {
-        $('#boxInfo').hide();
+        this.controller.boxInfo.hide()
+
         p.focus.set('main');
         //refresh
 
-    }
-
-    writeVariables() {
-        let T = p.globalTime;
-        $('#infoName').val(this.name);
-        $('#infoLength').val(this.length.get());
-        $('#infoDescription').val(this.description.get(T));
-        $('#infoImg').val(this.bgImage.get(T));
     }
 
 }

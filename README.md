@@ -10,12 +10,27 @@ This allows a complete understanding of what can be known while avoiding all pos
 - [x] introduce a basic structure that can change overtime
 - [x] implement a basic keyboard controller
 - [x] Introduce bundler and rework the code structure
-- [ ] define an entity
+- [x] define an entity
 - [ ] define possible connections between entities
 - [ ] define all possible interaction of events
 - [ ] implement a drawing system
+- [ ] introduce saving project in local storage
 
 
+# Keyboard commands
+## In the home
+- ```←, →``` Move trough the timeline
+- ```N``` New element
+- ```S``` Open Settings
+- ```Mouse click``` Open element
+
+## On create / update elemenet
+- ```TAB``` Default movement between slots
+- ```Enter``` Save the element
+- ```Escape``` Close element
+
+## On settings
+- ```Escape``` Close settings
 
 
 # Local setup
@@ -56,18 +71,3 @@ E3 find E5(obj) and keep it
 
 
 
-
-# Keyboard commands
-## In the home
-- ```←, →``` Move trough the timeline
-- ```S``` New element
-- ```N``` Open Settings
-- ```Mouse click``` Open element
-
-## On create / update elemenet
-- ```TAB``` Default movement between slots
-- ```Enter``` Save the element
-- ```Escape``` Close element
-
-## On settings
-- ```Escape``` Close settings

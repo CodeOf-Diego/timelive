@@ -58,8 +58,8 @@ export default class Keyboard {
                 e.preventDefault();
                 break;
             case 's':
-                p.projectInfo.new();
-                p.projectInfo.load();
+                p.projectSettings.new();
+                p.projectSettings.load();
                 break;
             case 'ArrowLeft':
                 if (p.globalTime.get() > 0) {
@@ -69,7 +69,7 @@ export default class Keyboard {
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.projectInfo.length.get()) {
+                if (p.globalTime.get() < p.projectSettings.length.get()) {
                     p.globalTime.set(p.globalTime.get() + 1);
                     p.timeline.draw();
                     p.canvas.draw();
@@ -81,7 +81,7 @@ export default class Keyboard {
     infoControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.projectInfo.unload();
+                p.projectSettings.unload();
                 break;
         }
     }

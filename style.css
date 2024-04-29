@@ -15,11 +15,15 @@
     /*transform: translate(100px,100px);*/
 }
 .element img {
-    max-width: ;
+    /* max-width: ; */
 }
 
 .container {
     position: fixed; /* or absolute */
     top: 10%;
     left: 10%;
+}
+
+#boxInfo, #boxInputElement {
+    display: none;
 }

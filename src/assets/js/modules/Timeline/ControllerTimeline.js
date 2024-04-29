@@ -1,5 +1,6 @@
 import ControllerGlobal from "../Controllers/ControllerGlobal";
 import { p } from "../../Project";
+import UE from "../Utils/ElementUtils";
 
 /*
 Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
@@ -8,18 +9,18 @@ Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
 export default class ControllerTimeline extends ControllerGlobal{
   constructor() {
     super();
-    this.controllers();
+    this.ready(()=>{
+      this.timeline = new UE("timeline")
+      this.controllers();
+    })
   }
 
   controllers() {
-    $(document).ready(function(){
-
-      $('#timeline').change(() => {
-        if (p.timeline.controller.active) {
-          p.globalTime.set(parseInt($(p.timeline.el).val()));
-          p.timeline.draw();
-        }
-      });
-    });
+    this.timeline.onChange(() => {
+      if (p.timeline.controller.active) {
+        p.globalTime.set(parseInt(p.timeline.controller.el.val));
+        p.timeline.draw();
+      }
+    })
   }
 }
