@@ -2,44 +2,49 @@ import { p } from "../../Project";
 
 export default class Focus {
     constructor() {
-        this.focus = "main";
+        this.focus = "menu";
     }
 
-    set(newFocus) {
-        if (this.isValidFocus(newFocus) && this.focus !== newFocus) {
-            this.focus = newFocus;
-            this.updateControllers();
+    static set(newFocus) {
+        if (Focus.isValid(newFocus) && this.focus !== newFocus) {
+            p.focus = newFocus;
+            Focus.updateControllers();
         }
     }
 
-    get() {
-        return this.focus;
+    static get() {
+        return p.focus;
     }
 
-    isValidFocus(newFocus) {
+    static isValid(newFocus) {
         return [
             'main',
             'element',
-            'info'
+            'info',
+            'menu'
         ].includes(newFocus)
 
     }
 
-    updateControllers() {
-        switch (this.focus) {
+    static updateControllers() {
+        switch (Focus.get()) {
             case 'main':
                 p.toolbox.controller.enable();
-                p.projectSettings.controller.disable();
+                p.settings.controller.disable();
                 break;
             case 'element':
                 p.toolbox.controller.enable();
-                p.projectSettings.controller.disable();
+                p.settings.controller.disable();
                 break;
             case 'info':
                 p.toolbox.controller.disable();
-                p.projectSettings.controller.enable();
+                p.settings.controller.enable();
                 break;
-
+            case 'menu':
+                p.toolbox.controller.disable();
+                p.settings.controller.disable();
+                p.menu.controller.enable();
+                break;
 
         }
     }

@@ -24,6 +24,6 @@
     left: 10%;
 }
 
-#boxInfo, #boxInputElement {
+#boxInfo, #boxInputElement, #settings, #timelineContainer {
     display: none;
 }

@@ -1,6 +1,7 @@
 import Element from "./Element";
 import ElementInputController from "./ElementInputController";
 import { p } from "../../Project";
+import Focus from "../Focus/Focus";
 
 /*
  The class handles the creation of an element and it's interaction with the input box
@@ -42,12 +43,12 @@ import { p } from "../../Project";
     load() {
         this.controller.boxInputElement.show()
         this.writeVariables()
-        p.focus.set('element');
+        Focus.set('element');
     }
     
     unload() {
         this.controller.boxInputElement.hide()
-        p.focus.set('main');
+        Focus.set('main');
         if (this.isNewElement)
             p.canvas.addElement(this);
             this.isNewElement = false

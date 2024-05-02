@@ -1,5 +1,6 @@
 import { p } from "../../Project";
 import ElementInputController from "../Entities/ElementInputController";
+import Focus from "../Focus/Focus";
 
 /**
  * Handles keyboard interactions
@@ -25,7 +26,7 @@ export default class Keyboard {
         if (p.keyboard.last_timeout !== 0) {
             clearTimeout(p.keyboard.last_timeout);
         }
-        switch (p.focus.get()) {
+        switch (Focus.get()) {
             case "main": p.keyboard.mainControls(e); break;
             case "info": p.keyboard.infoControls(e); break;
             case "element": p.keyboard.elementControls(e); break;
@@ -57,9 +58,8 @@ export default class Keyboard {
                 p.elementInput.load();
                 e.preventDefault();
                 break;
-            case 's':
-                p.projectSettings.new();
-                p.projectSettings.load();
+            case 'Escape':
+                p.settings.open();
                 break;
             case 'ArrowLeft':
                 if (p.globalTime.get() > 0) {
@@ -69,7 +69,7 @@ export default class Keyboard {
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.projectSettings.length.get()) {
+                if (p.globalTime.get() < p.settings.length.get()) {
                     p.globalTime.set(p.globalTime.get() + 1);
                     p.timeline.draw();
                     p.canvas.draw();
@@ -81,7 +81,7 @@ export default class Keyboard {
     infoControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.projectSettings.unload();
+                p.settings.unload();
                 break;
         }
     }

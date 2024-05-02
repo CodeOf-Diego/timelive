@@ -2,7 +2,7 @@ import ControllerGlobal from "../Controllers/ControllerGlobal";
 import { p } from "../../Project";
 import EU from "../Utils/ElementUtils"
 
-export default class ControllerProjectSettings extends ControllerGlobal{
+export default class ControllerSettings extends ControllerGlobal{
     constructor() {
         super();
         this.ready(()=>{
@@ -18,11 +18,11 @@ export default class ControllerProjectSettings extends ControllerGlobal{
     controllers() {
         /* when the project lenght web element is changed, updates the project data and pushes back if the world time is above the new max */
         this.infoLength.onChange(() => {
-            if (p.projectSettings.controller.active) {
-                p.projectSettings.controller.infoLength.val()
-                p.projectSettings.length.set(parseInt(this.infoLength.val()))
-                if (p.globalTime.get() > p.projectSettings.length.get()) {
-                    p.globalTime.set(p.projectSettings.length.get());
+            if (p.settings.controller.active) {
+                p.settings.controller.infoLength.val()
+                p.settings.length.set(parseInt(this.infoLength.val()))
+                if (p.globalTime.get() > p.settings.length.get()) {
+                    p.globalTime.set(p.settings.length.get());
 
                 }
                 p.timeline.draw();

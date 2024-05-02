@@ -21,7 +21,7 @@ This allows a complete understanding of what can be known while avoiding all pos
 ## In the home
 - ```←, →``` Move trough the timeline
 - ```N``` New element
-- ```S``` Open Settings
+- ```Escape``` Open Settings
 - ```Mouse click``` Open element
 
 ## On create / update elemenet
@@ -71,3 +71,20 @@ E3 find E5(obj) and keep it
 
 
 
+
+
+
+
+<!-- 
+
+MENU is a component that allows interactions with projects, like:
+- open existing projects
+- create a new one
+- directly displays a configured project in view mode
+
+SETTINGS is a component that allow interaction with an existing and open project, like:
+- changing it's parameters
+- saving
+- exiting to menu
+
+ -->

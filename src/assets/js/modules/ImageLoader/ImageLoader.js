@@ -6,7 +6,9 @@ export default class ImageLoader {
     // https://toppng.com/uploads/preview/question-marks-png-11552247920xwjr8vuvf8.png
     // https://photographylife.com/wp-content/uploads/2020/03/Ultra-Wide-Angle-Panoramas-1.jpg
     // https://static.kodami.it/wp-content/uploads/sites/31/2021/03/iStock-140469307.jpg
-    constructor () {
+    constructor () {}
+    
+    new() {
         this.urls = []
     }
 

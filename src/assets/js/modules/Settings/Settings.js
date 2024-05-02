@@ -1,7 +1,8 @@
 import TimeX from "../../TimeX";
 import TypeX from "../../TypeX";
-import ControllerProjectSettings from "./ControllerProjectSettings";
+import ControllerSettings from "./ControllerSettings";
 import { p } from "../../Project";
+import Focus from "../Focus/Focus";
 /**
  * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
  * This class handles the logic while the respective controller binds it to the web elements
@@ -13,7 +14,7 @@ import { p } from "../../Project";
  * WIP
  */
 
-export default class ProjectSettings {
+export default class Settings {
 
     constructor() {
         this.name;
@@ -22,7 +23,7 @@ export default class ProjectSettings {
         this.tags;
         this.description = new TypeX();
         this.bgImage = new TypeX();
-        this.controller = new ControllerProjectSettings();
+        this.controller = new ControllerSettings();
     }
 
     new() {
@@ -35,7 +36,7 @@ export default class ProjectSettings {
         this.bgImage.set("", T);
     }
 
-    load() {
+    open() {
         this.controller.boxInfo.show()
 
         /** Handles the drawing of the project settings */
@@ -46,13 +47,13 @@ export default class ProjectSettings {
         this.controller.infoImg.val(this.bgImage.get(T));
         
         //this.el.style("display", "block")
-        p.focus.set('info');
+        Focus.set('info');
     }
 
     unload() {
         this.controller.boxInfo.hide()
 
-        p.focus.set('main');
+        Focus.set('main');
         //refresh
 
     }

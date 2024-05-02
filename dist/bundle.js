@@ -187,12 +187,12 @@ class ControllerGlobal extends ElementUtils {
   }
 }
 
-;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectSettings/ControllerProjectSettings.js
+;// CONCATENATED MODULE: ./src/assets/js/modules/Settings/ControllerSettings.js
 
 
 
 
-class ControllerProjectSettings extends ControllerGlobal{
+class ControllerSettings extends ControllerGlobal{
     constructor() {
         super();
         this.ready(()=>{
@@ -208,11 +208,11 @@ class ControllerProjectSettings extends ControllerGlobal{
     controllers() {
         /* when the project lenght web element is changed, updates the project data and pushes back if the world time is above the new max */
         this.infoLength.onChange(() => {
-            if (p.projectSettings.controller.active) {
-                p.projectSettings.controller.infoLength.val()
-                p.projectSettings.length.set(parseInt(this.infoLength.val()))
-                if (p.globalTime.get() > p.projectSettings.length.get()) {
-                    p.globalTime.set(p.projectSettings.length.get());
+            if (p.settings.controller.active) {
+                p.settings.controller.infoLength.val()
+                p.settings.length.set(parseInt(this.infoLength.val()))
+                if (p.globalTime.get() > p.settings.length.get()) {
+                    p.globalTime.set(p.settings.length.get());
 
                 }
                 p.timeline.draw();
@@ -220,7 +220,61 @@ class ControllerProjectSettings extends ControllerGlobal{
         });
     }
 }
-;// CONCATENATED MODULE: ./src/assets/js/modules/ProjectSettings/ProjectSettings.js
+;// CONCATENATED MODULE: ./src/assets/js/modules/Focus/Focus.js
+
+
+class Focus {
+    constructor() {
+        this.focus = "menu";
+    }
+
+    static set(newFocus) {
+        if (Focus.isValid(newFocus) && this.focus !== newFocus) {
+            p.focus = newFocus;
+            Focus.updateControllers();
+        }
+    }
+
+    static get() {
+        return p.focus;
+    }
+
+    static isValid(newFocus) {
+        return [
+            'main',
+            'element',
+            'info',
+            'menu'
+        ].includes(newFocus)
+
+    }
+
+    static updateControllers() {
+        switch (Focus.get()) {
+            case 'main':
+                p.toolbox.controller.enable();
+                p.settings.controller.disable();
+                break;
+            case 'element':
+                p.toolbox.controller.enable();
+                p.settings.controller.disable();
+                break;
+            case 'info':
+                p.toolbox.controller.disable();
+                p.settings.controller.enable();
+                break;
+            case 'menu':
+                p.toolbox.controller.disable();
+                p.settings.controller.disable();
+                p.menu.controller.enable();
+                break;
+
+        }
+    }
+
+}
+;// CONCATENATED MODULE: ./src/assets/js/modules/Settings/Settings.js
+
 
 
 
@@ -236,7 +290,7 @@ class ControllerProjectSettings extends ControllerGlobal{
  * WIP
  */
 
-class ProjectSettings {
+class Settings {
 
     constructor() {
         this.name;
@@ -245,7 +299,7 @@ class ProjectSettings {
         this.tags;
         this.description = new TypeX();
         this.bgImage = new TypeX();
-        this.controller = new ControllerProjectSettings();
+        this.controller = new ControllerSettings();
     }
 
     new() {
@@ -258,7 +312,7 @@ class ProjectSettings {
         this.bgImage.set("", T);
     }
 
-    load() {
+    open() {
         this.controller.boxInfo.show()
 
         /** Handles the drawing of the project settings */
@@ -269,13 +323,13 @@ class ProjectSettings {
         this.controller.infoImg.val(this.bgImage.get(T));
         
         //this.el.style("display", "block")
-        p.focus.set('info');
+        Focus.set('info');
     }
 
     unload() {
         this.controller.boxInfo.hide()
 
-        p.focus.set('main');
+        Focus.set('main');
         //refresh
 
     }
@@ -328,6 +382,66 @@ list of other projects (excluding the current one)
 - load project, loads into memory all the project informations for the selected project
 - delete (deletes all the data of the selected project. if all local projects are deleted a new one is created by default)
 */
+;// CONCATENATED MODULE: ./src/assets/js/modules/Menu/MenuController.js
+
+
+
+
+/** Handles the interactions with the main menu */
+class MenuController extends ControllerGlobal {
+
+    constructor() {
+        super();
+        this.ready(()=>{
+            this.menu = new ElementUtils("menu");
+            this.menuNew = new ElementUtils("menuNew");
+             this.controllers();
+        })
+    }
+
+    controllers() {
+        this.menuNew.onClick(MenuController.newProject);
+    }
+
+    /** Initiate a new project */
+    static newProject() {
+        p.new();
+    }
+
+}
+;// CONCATENATED MODULE: ./src/assets/js/modules/Menu/Menu.js
+
+
+
+/** Handles the interactions with the main menu */
+class Menu {
+
+    constructor() {
+        this.controller = new MenuController()
+    }
+
+
+    /** Load the existing projects from local storage */
+    static #loadFromMemory() {
+        return localStorage.getItem('projects');
+    }
+
+    /** Shows the menu of the app */
+    static show() {
+        // Reads and displays a list of the existing projects 
+        let projects = Menu.#loadFromMemory();
+        if (projects) {
+            
+        }
+
+
+    }
+
+    
+    static hide(){ 
+        p.menu.controller.menu.hide()
+    }
+}
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Toolbox/ControllerToolbox.js
 
 
@@ -388,6 +502,7 @@ class ControllerTimeline extends ControllerGlobal{
     super();
     this.ready(()=>{
       this.timeline = new ElementUtils("timeline")
+      this.timelineContainer = new ElementUtils("timelineContainer")
       this.controllers();
 
       p.timeline.draw();
@@ -413,13 +528,22 @@ class Timeline {
         this.controller = new ControllerTimeline();
     }
 
+    /** Builds dinamically the timeline component depending on the project settings */
     draw() {
         // update graphics of the timeline
         this.controller.timeline.el.innerHTML = ""
         let T = p.globalTime;
-        for (let i = 0; i <= p.projectSettings.length.get() ; i++) {
+        for (let i = 0; i <= p.settings.length.get() ; i++) {
             this.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
         }
+    }
+
+    static show() {
+        p.timeline.controller.timelineContainer.show()
+    }
+
+    static hide() {
+        p.timeline.controller.timelineContainer.hide()
     }
 
 }
@@ -432,7 +556,9 @@ class ImageLoader {
     // https://toppng.com/uploads/preview/question-marks-png-11552247920xwjr8vuvf8.png
     // https://photographylife.com/wp-content/uploads/2020/03/Ultra-Wide-Angle-Panoramas-1.jpg
     // https://static.kodami.it/wp-content/uploads/sites/31/2021/03/iStock-140469307.jpg
-    constructor () {
+    constructor () {}
+    
+    new() {
         this.urls = []
     }
 
@@ -498,6 +624,7 @@ class ElementInputController extends ControllerGlobal{
 
 
 
+
 /**
  * Handles keyboard interactions
  * The class has a listener that records inputs and execute any possible action related to it
@@ -522,7 +649,7 @@ class Keyboard {
         if (p.keyboard.last_timeout !== 0) {
             clearTimeout(p.keyboard.last_timeout);
         }
-        switch (p.focus.get()) {
+        switch (Focus.get()) {
             case "main": p.keyboard.mainControls(e); break;
             case "info": p.keyboard.infoControls(e); break;
             case "element": p.keyboard.elementControls(e); break;
@@ -554,9 +681,8 @@ class Keyboard {
                 p.elementInput.load();
                 e.preventDefault();
                 break;
-            case 's':
-                p.projectSettings.new();
-                p.projectSettings.load();
+            case 'Escape':
+                p.settings.open();
                 break;
             case 'ArrowLeft':
                 if (p.globalTime.get() > 0) {
@@ -566,7 +692,7 @@ class Keyboard {
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.projectSettings.length.get()) {
+                if (p.globalTime.get() < p.settings.length.get()) {
                     p.globalTime.set(p.globalTime.get() + 1);
                     p.timeline.draw();
                     p.canvas.draw();
@@ -578,7 +704,7 @@ class Keyboard {
     infoControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.projectSettings.unload();
+                p.settings.unload();
                 break;
         }
     }
@@ -595,54 +721,6 @@ class Keyboard {
                 break;
         }
     }
-}
-;// CONCATENATED MODULE: ./src/assets/js/modules/Focus/Focus.js
-
-
-class Focus {
-    constructor() {
-        this.focus = "main";
-    }
-
-    set(newFocus) {
-        if (this.isValidFocus(newFocus) && this.focus !== newFocus) {
-            this.focus = newFocus;
-            this.updateControllers();
-        }
-    }
-
-    get() {
-        return this.focus;
-    }
-
-    isValidFocus(newFocus) {
-        return [
-            'main',
-            'element',
-            'info'
-        ].includes(newFocus)
-
-    }
-
-    updateControllers() {
-        switch (this.focus) {
-            case 'main':
-                p.toolbox.controller.enable();
-                p.projectSettings.controller.disable();
-                break;
-            case 'element':
-                p.toolbox.controller.enable();
-                p.projectSettings.controller.disable();
-                break;
-            case 'info':
-                p.toolbox.controller.disable();
-                p.projectSettings.controller.enable();
-                break;
-
-
-        }
-    }
-
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Entities/Element.js
 
@@ -709,6 +787,7 @@ class Element {
 
 
 
+
 /*
  The class handles the creation of an element and it's interaction with the input box
  */
@@ -749,12 +828,12 @@ class Element {
     load() {
         this.controller.boxInputElement.show()
         this.writeVariables()
-        p.focus.set('element');
+        Focus.set('element');
     }
     
     unload() {
         this.controller.boxInputElement.hide()
-        p.focus.set('main');
+        Focus.set('main');
         if (this.isNewElement)
             p.canvas.addElement(this);
             this.isNewElement = false
@@ -936,40 +1015,12 @@ class CanvasElements {
 class Canvas {
     constructor() {
         this.separation = 40;
-        this.loadProject()  // for now it is assumed this works on a single constant project
     }
     
     /** When opening an existing or a new project binds all the CanvasElements to each respective element */
     loadProject() {
         this.cElements = new CanvasElements()
     }
-
-
-
-
-/**
- * All'apertura di un progetto prima vengono caricate le risorse poi lanciata la draw
- * ad ogni apertura tutti i canvaselements vanno sovrascritti con gli elements presenti nella nuova apertura
- * 
- * ad ogni aggiunta o rimozione va aggiornata la lista degli elementi presenti
- * 
- * ad ogni draw vanno ciclati tutti gli elementi dom che sono presenti e ridisegnati
- * 
- * 
- * alla aggiunta l'elemento aggiunto  
- * 
- * 
- * 
- * 
- * 
- */
-
-
-
-
-
-
-
 
 
     draw() {
@@ -995,48 +1046,45 @@ class Canvas {
 
 
 
+
 class Project {
     constructor() {
         this.globalTime = new TimeX();
-        this.projectSettings = new ProjectSettings();
         this.projectView;
-
-        this.toolbox;
-        this.timeline;
-        this.settings;
-        this.keyboard;
-        this.focus;
-        this.imageLoader;
-
+        
+        this.menu = new Menu();
+        this.toolbox = new Toolbox();
+        this.timeline = new Timeline();
+        this.settings = new Settings();
+        this.keyboard = new Keyboard();
+        this.focus = new Focus();
+        this.imageLoader = new ImageLoader();
+        this.canvas = new Canvas();
+        
+        /** @type {Element[]} */
         this.elements;
+        this.elementInput = new ElementInput();
+        
         this.bonds;
-        this.elementInput;
-
         this.bondInput;
     }
-
+    
     new() {
         this.globalTime.set(1);
         // Fill all global project variables with newly created data
-        this.projectSettings.new();
-        //this.projectSettings = this.createNewProjectSettings();
+       
+        this.settings.new();
         this.projectView = this.createNewProjectView();
 
-        this.toolbox = new Toolbox();
-        this.timeline = new Timeline();
-        this.keyboard = new Keyboard();
-        this.focus = new Focus();
-        this.canvas = new Canvas();
-        this.imageLoader = new ImageLoader();
-
-
-         /** @type {Element[]} */
+        this.canvas.loadProject()  // for now it is assumed this works on a single constant project
+        this.imageLoader.new()
         this.elements = [null];
         this.bonds = [];
-
-        this.elementInput = new ElementInput();
         //this.bondInput = new BondInput();
 
+        Focus.set('main')
+        Menu.hide()
+        Timeline.show()
     }
 
     open(projectData) {
@@ -1062,6 +1110,20 @@ class Project {
 
     }
 
+    /** Starts the engine */
+    start() {
+        // first thing todo is to check if the app is in view-only mode
+        // for now it will never be
+
+        if(false) {}
+        else {
+            Menu.show()
+            Focus.set('menu')
+        }
+        // next local storage is checked to find existing projects to open
+        // lastly a "New Project" button is always present
+    }
+
 }
 
 const p = new Project();
@@ -1071,6 +1133,8 @@ const p = new Project();
 // Import modules
 
 
-p.new();
+document.addEventListener('DOMContentLoaded', function() {
+    p.start();
+});
 /******/ })()
 ;

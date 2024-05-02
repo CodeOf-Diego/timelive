@@ -1,5 +1,6 @@
 import TimeX from "./TimeX";
-import ProjectSettings from "./modules/ProjectSettings/ProjectSettings";
+import Settings from "./modules/Settings/Settings";
+import Menu from "./modules/Menu/Menu";
 import Toolbox from "./modules/Toolbox/Toolbox";
 import Timeline from "./modules/Timeline/Timeline";
 import Keyboard from "./modules/Keyboard/Keyboard";
@@ -12,45 +13,41 @@ import ImageLoader from "./modules/ImageLoader/ImageLoader";
 class Project {
     constructor() {
         this.globalTime = new TimeX();
-        this.projectSettings = new ProjectSettings();
         this.projectView;
-
-        this.toolbox;
-        this.timeline;
-        this.settings;
-        this.keyboard;
-        this.focus;
-        this.imageLoader;
-
+        
+        this.menu = new Menu();
+        this.toolbox = new Toolbox();
+        this.timeline = new Timeline();
+        this.settings = new Settings();
+        this.keyboard = new Keyboard();
+        this.focus = new Focus();
+        this.imageLoader = new ImageLoader();
+        this.canvas = new Canvas();
+        
+        /** @type {Element[]} */
         this.elements;
+        this.elementInput = new ElementInput();
+        
         this.bonds;
-        this.elementInput;
-
         this.bondInput;
     }
-
+    
     new() {
         this.globalTime.set(1);
         // Fill all global project variables with newly created data
-        this.projectSettings.new();
-        //this.projectSettings = this.createNewProjectSettings();
+       
+        this.settings.new();
         this.projectView = this.createNewProjectView();
 
-        this.toolbox = new Toolbox();
-        this.timeline = new Timeline();
-        this.keyboard = new Keyboard();
-        this.focus = new Focus();
-        this.canvas = new Canvas();
-        this.imageLoader = new ImageLoader();
-
-
-         /** @type {Element[]} */
+        this.canvas.loadProject()  // for now it is assumed this works on a single constant project
+        this.imageLoader.new()
         this.elements = [null];
         this.bonds = [];
-
-        this.elementInput = new ElementInput();
         //this.bondInput = new BondInput();
 
+        Focus.set('main')
+        Menu.hide()
+        Timeline.show()
     }
 
     open(projectData) {
@@ -74,6 +71,20 @@ class Project {
     /* Sets up all the controllers and the elements of the project */
     setUp() {
 
+    }
+
+    /** Starts the engine */
+    start() {
+        // first thing todo is to check if the app is in view-only mode
+        // for now it will never be
+
+        if(0) {}
+        else {
+            Menu.show()
+            Focus.set('menu')
+        }
+        // next local storage is checked to find existing projects to open
+        // lastly a "New Project" button is always present
     }
 
 }
