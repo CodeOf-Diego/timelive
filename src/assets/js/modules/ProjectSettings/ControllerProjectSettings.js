@@ -16,10 +16,11 @@ export default class ControllerProjectSettings extends ControllerGlobal{
     }
     
     controllers() {
-        /* not sure what this did */
-        this.infoLength.onChange((e) => {
+        /* when the project lenght web element is changed, updates the project data and pushes back if the world time is above the new max */
+        this.infoLength.onChange(() => {
             if (p.projectSettings.controller.active) {
-                p.projectSettings.length.set(parseInt($(p.projectSettings.el).val()))
+                p.projectSettings.controller.infoLength.val()
+                p.projectSettings.length.set(parseInt(this.infoLength.val()))
                 if (p.globalTime.get() > p.projectSettings.length.get()) {
                     p.globalTime.set(p.projectSettings.length.get());
 

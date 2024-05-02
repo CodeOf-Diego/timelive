@@ -30,6 +30,12 @@ export default class ElementUtils {
         this.el.focus()
     }
 
+    val(value = null) {
+        if (value === null) 
+            return this.el.value
+        this.el.value = value
+    }
+
     static byID(el) {
         return document.getElementById(el);
     }

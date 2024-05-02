@@ -49,10 +49,6 @@ export default class Canvas {
 
     addElement(elementInput) {
         CanvasElements.add(elementInput)
-        /* $(`.element[data-id='`+elementInput.ID+`']`).click((e) => {
-            p.elementInput.open(parseInt(e.currentTarget.dataset['id']));
-            p.elementInput.load();
-        }); */
         this.draw();
     }
 }

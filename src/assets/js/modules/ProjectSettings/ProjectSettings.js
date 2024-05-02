@@ -23,7 +23,6 @@ export default class ProjectSettings {
         this.description = new TypeX();
         this.bgImage = new TypeX();
         this.controller = new ControllerProjectSettings();
-        this.el = '#infoLength'
     }
 
     new() {
@@ -41,10 +40,10 @@ export default class ProjectSettings {
 
         /** Handles the drawing of the project settings */
         let T = p.globalTime;
-        this.controller.infoName.val = this.name;
-        this.controller.infoLength.val = this.length.get();
-        this.controller.infoDescription.val = this.description.get(T);
-        this.controller.infoImg.val = this.bgImage.get(T);
+        this.controller.infoName.val(this.name);
+        this.controller.infoLength.val(this.length.get());
+        this.controller.infoDescription.val(this.description.get(T));
+        this.controller.infoImg.val(this.bgImage.get(T));
         
         //this.el.style("display", "block")
         p.focus.set('info');

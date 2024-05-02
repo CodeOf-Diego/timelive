@@ -68,14 +68,16 @@ export default class CanvasElements {
 
     /** Find positions of all currently placed elements and add offset for new position */
     static newPosition() {
-        let pos = [], found = false,
-        container = $('.container').offset().left;
+        let pos = [];
+        let found = false;
+        let container = document.querySelector('.container').getBoundingClientRect().left;
         let max = container;
-
-        $('.element').each(function() {
-            max = Math.max(max, $(this).offset().left);
-            found = true
-        });
+        
+        document.querySelectorAll('.element').forEach(function(element) {
+            let offsetLeft = element.getBoundingClientRect().left;
+            max = Math.max(max, offsetLeft);
+            found = true;
+        });        
 
 
     //        console.log(pos, container, max, found)
@@ -95,7 +97,7 @@ export default class CanvasElements {
             <div class="name"></div>                
             <div class="description"></div>
         </div>`;
-        $('.container').append(html);
+        document.querySelector('.container').innerHTML+= html 
         
         /** Finds the element for the just added html */
         let element = document.querySelector('.element[data-id="'+elementInput.ID+'"]');

@@ -115,7 +115,7 @@ class TypeX {
 
 	/* Duplicates the data and returns a copy */
 	duplicate() {
-		return jQuery.extend(true, new TypeX, this)
+		return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
 	}
 }
 
@@ -150,6 +150,12 @@ class ElementUtils {
     }
     focus() {
         this.el.focus()
+    }
+
+    val(value = null) {
+        if (value === null) 
+            return this.el.value
+        this.el.value = value
     }
 
     static byID(el) {
@@ -200,10 +206,11 @@ class ControllerProjectSettings extends ControllerGlobal{
     }
     
     controllers() {
-        /* not sure what this did */
-        this.infoLength.onChange((e) => {
+        /* when the project lenght web element is changed, updates the project data and pushes back if the world time is above the new max */
+        this.infoLength.onChange(() => {
             if (p.projectSettings.controller.active) {
-                p.projectSettings.length.set(parseInt($(p.projectSettings.el).val()))
+                p.projectSettings.controller.infoLength.val()
+                p.projectSettings.length.set(parseInt(this.infoLength.val()))
                 if (p.globalTime.get() > p.projectSettings.length.get()) {
                     p.globalTime.set(p.projectSettings.length.get());
 
@@ -239,7 +246,6 @@ class ProjectSettings {
         this.description = new TypeX();
         this.bgImage = new TypeX();
         this.controller = new ControllerProjectSettings();
-        this.el = '#infoLength'
     }
 
     new() {
@@ -257,10 +263,10 @@ class ProjectSettings {
 
         /** Handles the drawing of the project settings */
         let T = p.globalTime;
-        this.controller.infoName.val = this.name;
-        this.controller.infoLength.val = this.length.get();
-        this.controller.infoDescription.val = this.description.get(T);
-        this.controller.infoImg.val = this.bgImage.get(T);
+        this.controller.infoName.val(this.name);
+        this.controller.infoLength.val(this.length.get());
+        this.controller.infoDescription.val(this.description.get(T));
+        this.controller.infoImg.val(this.bgImage.get(T));
         
         //this.el.style("display", "block")
         p.focus.set('info');
@@ -383,6 +389,8 @@ class ControllerTimeline extends ControllerGlobal{
     this.ready(()=>{
       this.timeline = new ElementUtils("timeline")
       this.controllers();
+
+      p.timeline.draw();
     })
   }
 
@@ -403,15 +411,14 @@ class ControllerTimeline extends ControllerGlobal{
 class Timeline {
     constructor() {
         this.controller = new ControllerTimeline();
-        this.draw();
     }
 
     draw() {
         // update graphics of the timeline
-        $('#timeline option').remove();
+        this.controller.timeline.el.innerHTML = ""
         let T = p.globalTime;
         for (let i = 0; i <= p.projectSettings.length.get() ; i++) {
-            $("#timeline").append(new Option(i.toString(), i.toString(),false, T.get() === i));
+            this.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
         }
     }
 
@@ -757,22 +764,22 @@ class Element {
     /** Writes the variables from the data into the web page */
     writeVariables() {
         let T = p.globalTime;
-        this.controller.elementName.val = this.getName(T);
-        this.controller.elementDescription.val = this.getDescription(T);
-        this.controller.elementStart.val = this.getStart(T);
-        this.controller.elementEnd.val = this.getEnd(T);
-        this.controller.elementImg.val = this.getImg(T);
+        this.controller.elementName.val(this.getName(T));
+        this.controller.elementDescription.val(this.getDescription(T));
+        this.controller.elementStart.val(this.getStart(T));
+        this.controller.elementEnd.val(this.getEnd(T));
+        this.controller.elementImg.val(this.getImg(T));
         this.controller.elementName.focus()
     }
     
     /** Reads the variables from the web page and writes it as data */
     readVariables() {
         let T = p.globalTime;
-        this.setName(this.controller.elementName.val,T);
-        this.setDescription(this.controller.elementDescription.val,T);
-        this.setStart(this.controller.elementStart.val,T);
-        this.setEnd(this.controller.elementEnd.val,T);
-        this.setImg(this.controller.elementImg.val,T);
+        this.setName(this.controller.elementName.val(),T);
+        this.setDescription(this.controller.elementDescription.val(),T);
+        this.setStart(this.controller.elementStart.val(),T);
+        this.setEnd(this.controller.elementEnd.val(),T);
+        this.setImg(this.controller.elementImg.val(),T);
     }
 
     /* New elements are appended at the end of the public array,
@@ -875,14 +882,16 @@ class CanvasElements {
 
     /** Find positions of all currently placed elements and add offset for new position */
     static newPosition() {
-        let pos = [], found = false,
-        container = $('.container').offset().left;
+        let pos = [];
+        let found = false;
+        let container = document.querySelector('.container').getBoundingClientRect().left;
         let max = container;
-
-        $('.element').each(function() {
-            max = Math.max(max, $(this).offset().left);
-            found = true
-        });
+        
+        document.querySelectorAll('.element').forEach(function(element) {
+            let offsetLeft = element.getBoundingClientRect().left;
+            max = Math.max(max, offsetLeft);
+            found = true;
+        });        
 
 
     //        console.log(pos, container, max, found)
@@ -902,7 +911,7 @@ class CanvasElements {
             <div class="name"></div>                
             <div class="description"></div>
         </div>`;
-        $('.container').append(html);
+        document.querySelector('.container').innerHTML+= html 
         
         /** Finds the element for the just added html */
         let element = document.querySelector('.element[data-id="'+elementInput.ID+'"]');
@@ -971,10 +980,6 @@ class Canvas {
 
     addElement(elementInput) {
         CanvasElements.add(elementInput)
-        /* $(`.element[data-id='`+elementInput.ID+`']`).click((e) => {
-            p.elementInput.open(parseInt(e.currentTarget.dataset['id']));
-            p.elementInput.load();
-        }); */
         this.draw();
     }
 }

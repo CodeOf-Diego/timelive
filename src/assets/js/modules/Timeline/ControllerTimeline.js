@@ -12,6 +12,8 @@ export default class ControllerTimeline extends ControllerGlobal{
     this.ready(()=>{
       this.timeline = new UE("timeline")
       this.controllers();
+
+      p.timeline.draw();
     })
   }
 

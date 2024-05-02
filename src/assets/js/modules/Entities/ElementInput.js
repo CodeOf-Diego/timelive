@@ -57,22 +57,22 @@ import { p } from "../../Project";
     /** Writes the variables from the data into the web page */
     writeVariables() {
         let T = p.globalTime;
-        this.controller.elementName.val = this.getName(T);
-        this.controller.elementDescription.val = this.getDescription(T);
-        this.controller.elementStart.val = this.getStart(T);
-        this.controller.elementEnd.val = this.getEnd(T);
-        this.controller.elementImg.val = this.getImg(T);
+        this.controller.elementName.val(this.getName(T));
+        this.controller.elementDescription.val(this.getDescription(T));
+        this.controller.elementStart.val(this.getStart(T));
+        this.controller.elementEnd.val(this.getEnd(T));
+        this.controller.elementImg.val(this.getImg(T));
         this.controller.elementName.focus()
     }
     
     /** Reads the variables from the web page and writes it as data */
     readVariables() {
         let T = p.globalTime;
-        this.setName(this.controller.elementName.val,T);
-        this.setDescription(this.controller.elementDescription.val,T);
-        this.setStart(this.controller.elementStart.val,T);
-        this.setEnd(this.controller.elementEnd.val,T);
-        this.setImg(this.controller.elementImg.val,T);
+        this.setName(this.controller.elementName.val(),T);
+        this.setDescription(this.controller.elementDescription.val(),T);
+        this.setStart(this.controller.elementStart.val(),T);
+        this.setEnd(this.controller.elementEnd.val(),T);
+        this.setImg(this.controller.elementImg.val(),T);
     }
 
     /* New elements are appended at the end of the public array,
