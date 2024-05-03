@@ -20,7 +20,7 @@ export default class Focus {
         return [
             'main',
             'element',
-            'info',
+            'settings',
             'menu'
         ].includes(newFocus)
 
@@ -36,7 +36,7 @@ export default class Focus {
                 p.toolbox.controller.enable();
                 p.settings.controller.disable();
                 break;
-            case 'info':
+            case 'settings':
                 p.toolbox.controller.disable();
                 p.settings.controller.enable();
                 break;

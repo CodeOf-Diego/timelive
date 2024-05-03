@@ -1,6 +1,7 @@
 import { p } from "../../Project";
 import ElementInputController from "../Entities/ElementInputController";
 import Focus from "../Focus/Focus";
+import Timeline from "../Timeline/Timeline";
 
 /**
  * Handles keyboard interactions
@@ -28,7 +29,7 @@ export default class Keyboard {
         }
         switch (Focus.get()) {
             case "main": p.keyboard.mainControls(e); break;
-            case "info": p.keyboard.infoControls(e); break;
+            case "settings": p.keyboard.settingsControls(e); break;
             case "element": p.keyboard.elementControls(e); break;
         }
         p.keyboard.last_timeout = setTimeout(p.keyboard.getWord, p.keyboard.countdown);
@@ -62,23 +63,23 @@ export default class Keyboard {
                 p.settings.open();
                 break;
             case 'ArrowLeft':
-                if (p.globalTime.get() > 0) {
-                    p.globalTime.set(p.globalTime.get() - 1);
-                    p.timeline.draw();
+                if (p.time.get() > 0) {
+                    p.time.set(p.time.get() - 1);
+                    Timeline.draw();
                     p.canvas.draw();
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.settings.length.get()) {
-                    p.globalTime.set(p.globalTime.get() + 1);
-                    p.timeline.draw();
+                if (p.time.get() < p.settings.length.get()) {
+                    p.time.set(p.time.get() + 1);
+                    Timeline.draw();
                     p.canvas.draw();
                 }
                 break;
         }
     }
 
-    infoControls(e) {
+    settingsControls(e) {
         switch (e.key) {
             case 'Escape':
                 p.settings.unload();

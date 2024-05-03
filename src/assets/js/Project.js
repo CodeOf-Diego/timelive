@@ -12,7 +12,7 @@ import ImageLoader from "./modules/ImageLoader/ImageLoader";
 
 class Project {
     constructor() {
-        this.globalTime = new TimeX();
+        this.time = new TimeX();
         this.projectView;
         
         this.menu = new Menu();
@@ -33,7 +33,7 @@ class Project {
     }
     
     new() {
-        this.globalTime.set(1);
+        this.time.set(1);
         // Fill all global project variables with newly created data
        
         this.settings.new();
@@ -47,6 +47,7 @@ class Project {
 
         Focus.set('main')
         Menu.hide()
+        Timeline.draw()
         Timeline.show()
     }
 

@@ -1,6 +1,7 @@
 import ControllerGlobal from "../Controllers/ControllerGlobal";
 import { p } from "../../Project";
 import UE from "../Utils/ElementUtils";
+import Timeline from "./Timeline";
 
 /*
 Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
@@ -12,17 +13,16 @@ export default class ControllerTimeline extends ControllerGlobal{
     this.ready(()=>{
       this.timeline = new UE("timeline")
       this.timelineContainer = new UE("timelineContainer")
-      this.controllers();
-
-      p.timeline.draw();
+      this.controllers()
     })
   }
 
   controllers() {
     this.timeline.onChange(() => {
       if (p.timeline.controller.active) {
-        p.globalTime.set(parseInt(p.timeline.controller.el.val));
-        p.timeline.draw();
+        p.time.set(parseInt(p.timeline.controller.timeline.val()));
+        Timeline.draw();
+        p.canvas.draw();
       }
     })
   }

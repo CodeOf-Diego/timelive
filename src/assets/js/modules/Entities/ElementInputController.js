@@ -27,7 +27,7 @@ export default class ElementInputController extends ControllerGlobal{
         if (p.elementInput.controller.active) {
             p.elementInput.readVariables();
             p.elementInput.save();
-            ImageLoader.addURL(p.elementInput.getImg(p.globalTime))
+            ImageLoader.addURL(p.elementInput.getImg(p.time))
             p.elementInput.unload();
             p.canvas.draw()
         }

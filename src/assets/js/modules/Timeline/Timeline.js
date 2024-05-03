@@ -7,12 +7,12 @@ export default class Timeline {
     }
 
     /** Builds dinamically the timeline component depending on the project settings */
-    draw() {
+    static draw() {
         // update graphics of the timeline
-        this.controller.timeline.el.innerHTML = ""
-        let T = p.globalTime;
+        p.timeline.controller.timeline.el.innerHTML = ""
+        let T = p.time;
         for (let i = 0; i <= p.settings.length.get() ; i++) {
-            this.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
+            p.timeline.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
         }
     }
 

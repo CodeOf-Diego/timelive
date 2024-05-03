@@ -187,7 +187,67 @@ class ControllerGlobal extends ElementUtils {
   }
 }
 
+;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/ControllerTimeline.js
+
+
+
+
+
+/*
+Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
+ alla stampa e all'utilizzo dei parametri altrove
+*/
+class ControllerTimeline extends ControllerGlobal{
+  constructor() {
+    super();
+    this.ready(()=>{
+      this.timeline = new ElementUtils("timeline")
+      this.timelineContainer = new ElementUtils("timelineContainer")
+      this.controllers()
+    })
+  }
+
+  controllers() {
+    this.timeline.onChange(() => {
+      if (p.timeline.controller.active) {
+        p.time.set(parseInt(p.timeline.controller.timeline.val()));
+        Timeline.draw();
+        p.canvas.draw();
+      }
+    })
+  }
+}
+
+;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/Timeline.js
+
+
+
+class Timeline {
+    constructor() {
+        this.controller = new ControllerTimeline();
+    }
+
+    /** Builds dinamically the timeline component depending on the project settings */
+    static draw() {
+        // update graphics of the timeline
+        p.timeline.controller.timeline.el.innerHTML = ""
+        let T = p.time;
+        for (let i = 0; i <= p.settings.length.get() ; i++) {
+            p.timeline.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
+        }
+    }
+
+    static show() {
+        p.timeline.controller.timelineContainer.show()
+    }
+
+    static hide() {
+        p.timeline.controller.timelineContainer.hide()
+    }
+
+}
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Settings/ControllerSettings.js
+
 
 
 
@@ -211,11 +271,10 @@ class ControllerSettings extends ControllerGlobal{
             if (p.settings.controller.active) {
                 p.settings.controller.infoLength.val()
                 p.settings.length.set(parseInt(this.infoLength.val()))
-                if (p.globalTime.get() > p.settings.length.get()) {
-                    p.globalTime.set(p.settings.length.get());
-
+                if (p.time.get() > p.settings.length.get()) {
+                    p.time.set(p.settings.length.get());
                 }
-                p.timeline.draw();
+                Timeline.draw();
             }
         });
     }
@@ -243,7 +302,7 @@ class Focus {
         return [
             'main',
             'element',
-            'info',
+            'settings',
             'menu'
         ].includes(newFocus)
 
@@ -259,7 +318,7 @@ class Focus {
                 p.toolbox.controller.enable();
                 p.settings.controller.disable();
                 break;
-            case 'info':
+            case 'settings':
                 p.toolbox.controller.disable();
                 p.settings.controller.enable();
                 break;
@@ -303,7 +362,7 @@ class Settings {
     }
 
     new() {
-        let T = p.globalTime;
+        let T = p.time;
         this.name = "New Project";
         this.length.set(10);
         this.timeType = 'episode';
@@ -316,14 +375,13 @@ class Settings {
         this.controller.boxInfo.show()
 
         /** Handles the drawing of the project settings */
-        let T = p.globalTime;
+        let T = p.time;
         this.controller.infoName.val(this.name);
         this.controller.infoLength.val(this.length.get());
         this.controller.infoDescription.val(this.description.get(T));
         this.controller.infoImg.val(this.bgImage.get(T));
         
-        //this.el.style("display", "block")
-        Focus.set('info');
+        Focus.set('settings');
     }
 
     unload() {
@@ -346,14 +404,13 @@ when opening for the first time a new untitled project is created with default a
 
 
 
-info diventa settings
 
 
 
 project saving options
 
 project settings contiente
-let T = p.globalTime;
+let T = p.time;
 this.name = "New Project";
 this.length.set(10);
 this.timeType = 'episode';
@@ -433,8 +490,6 @@ class Menu {
         if (projects) {
             
         }
-
-
     }
 
     
@@ -487,65 +542,6 @@ class Toolbox {
     constructor() {
         this.controller = new ControllerToolbox();
     }
-}
-;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/ControllerTimeline.js
-
-
-
-
-/*
-Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
- alla stampa e all'utilizzo dei parametri altrove
-*/
-class ControllerTimeline extends ControllerGlobal{
-  constructor() {
-    super();
-    this.ready(()=>{
-      this.timeline = new ElementUtils("timeline")
-      this.timelineContainer = new ElementUtils("timelineContainer")
-      this.controllers();
-
-      p.timeline.draw();
-    })
-  }
-
-  controllers() {
-    this.timeline.onChange(() => {
-      if (p.timeline.controller.active) {
-        p.globalTime.set(parseInt(p.timeline.controller.el.val));
-        p.timeline.draw();
-      }
-    })
-  }
-}
-
-;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/Timeline.js
-
-
-
-class Timeline {
-    constructor() {
-        this.controller = new ControllerTimeline();
-    }
-
-    /** Builds dinamically the timeline component depending on the project settings */
-    draw() {
-        // update graphics of the timeline
-        this.controller.timeline.el.innerHTML = ""
-        let T = p.globalTime;
-        for (let i = 0; i <= p.settings.length.get() ; i++) {
-            this.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
-        }
-    }
-
-    static show() {
-        p.timeline.controller.timelineContainer.show()
-    }
-
-    static hide() {
-        p.timeline.controller.timelineContainer.hide()
-    }
-
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/ImageLoader/ImageLoader.js
 
@@ -614,13 +610,14 @@ class ElementInputController extends ControllerGlobal{
         if (p.elementInput.controller.active) {
             p.elementInput.readVariables();
             p.elementInput.save();
-            ImageLoader.addURL(p.elementInput.getImg(p.globalTime))
+            ImageLoader.addURL(p.elementInput.getImg(p.time))
             p.elementInput.unload();
             p.canvas.draw()
         }
     }
 }
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Keyboard/Keyboard.js
+
 
 
 
@@ -651,7 +648,7 @@ class Keyboard {
         }
         switch (Focus.get()) {
             case "main": p.keyboard.mainControls(e); break;
-            case "info": p.keyboard.infoControls(e); break;
+            case "settings": p.keyboard.settingsControls(e); break;
             case "element": p.keyboard.elementControls(e); break;
         }
         p.keyboard.last_timeout = setTimeout(p.keyboard.getWord, p.keyboard.countdown);
@@ -685,23 +682,23 @@ class Keyboard {
                 p.settings.open();
                 break;
             case 'ArrowLeft':
-                if (p.globalTime.get() > 0) {
-                    p.globalTime.set(p.globalTime.get() - 1);
-                    p.timeline.draw();
+                if (p.time.get() > 0) {
+                    p.time.set(p.time.get() - 1);
+                    Timeline.draw();
                     p.canvas.draw();
                 }
                 break;
             case 'ArrowRight':
-                if (p.globalTime.get() < p.settings.length.get()) {
-                    p.globalTime.set(p.globalTime.get() + 1);
-                    p.timeline.draw();
+                if (p.time.get() < p.settings.length.get()) {
+                    p.time.set(p.time.get() + 1);
+                    Timeline.draw();
                     p.canvas.draw();
                 }
                 break;
         }
     }
 
-    infoControls(e) {
+    settingsControls(e) {
         switch (e.key) {
             case 'Escape':
                 p.settings.unload();
@@ -800,10 +797,10 @@ class Element {
     }
 
     new() {
-        let T = p.globalTime;
+        let T = p.time;
         this.setName('',T);
         this.setDescription('',T);
-        this.setStart(p.globalTime.get(),T);
+        this.setStart(p.time.get(),T);
         this.setEnd(0,T);
         this.setImg('',T);
         this.ID = 0;
@@ -842,7 +839,7 @@ class Element {
 
     /** Writes the variables from the data into the web page */
     writeVariables() {
-        let T = p.globalTime;
+        let T = p.time;
         this.controller.elementName.val(this.getName(T));
         this.controller.elementDescription.val(this.getDescription(T));
         this.controller.elementStart.val(this.getStart(T));
@@ -853,7 +850,7 @@ class Element {
     
     /** Reads the variables from the web page and writes it as data */
     readVariables() {
-        let T = p.globalTime;
+        let T = p.time;
         this.setName(this.controller.elementName.val(),T);
         this.setDescription(this.controller.elementDescription.val(),T);
         this.setStart(this.controller.elementStart.val(),T);
@@ -864,7 +861,7 @@ class Element {
     /* New elements are appended at the end of the public array,
        In existing elements are updated only the attributes with changed values */
     save() {
-        let T = p.globalTime;
+        let T = p.time;
         this.isNewElement = this.ID === 0;
         if(this.ID === 0) {
             let newElement = new Element();
@@ -925,7 +922,7 @@ class CanvasElements {
 
     /* Main element drawing function */
     #updateElement(ID) {
-        let T = p.globalTime
+        let T = p.time
 
         let element = this.elements[ID]
 
@@ -1049,7 +1046,7 @@ class Canvas {
 
 class Project {
     constructor() {
-        this.globalTime = new TimeX();
+        this.time = new TimeX();
         this.projectView;
         
         this.menu = new Menu();
@@ -1070,7 +1067,7 @@ class Project {
     }
     
     new() {
-        this.globalTime.set(1);
+        this.time.set(1);
         // Fill all global project variables with newly created data
        
         this.settings.new();
@@ -1084,6 +1081,7 @@ class Project {
 
         Focus.set('main')
         Menu.hide()
+        Timeline.draw()
         Timeline.show()
     }
 

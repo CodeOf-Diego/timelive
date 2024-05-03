@@ -27,7 +27,7 @@ export default class Settings {
     }
 
     new() {
-        let T = p.globalTime;
+        let T = p.time;
         this.name = "New Project";
         this.length.set(10);
         this.timeType = 'episode';
@@ -40,14 +40,13 @@ export default class Settings {
         this.controller.boxInfo.show()
 
         /** Handles the drawing of the project settings */
-        let T = p.globalTime;
+        let T = p.time;
         this.controller.infoName.val(this.name);
         this.controller.infoLength.val(this.length.get());
         this.controller.infoDescription.val(this.description.get(T));
         this.controller.infoImg.val(this.bgImage.get(T));
         
-        //this.el.style("display", "block")
-        Focus.set('info');
+        Focus.set('settings');
     }
 
     unload() {
@@ -70,14 +69,13 @@ when opening for the first time a new untitled project is created with default a
 
 
 
-info diventa settings
 
 
 
 project saving options
 
 project settings contiente
-let T = p.globalTime;
+let T = p.time;
 this.name = "New Project";
 this.length.set(10);
 this.timeType = 'episode';

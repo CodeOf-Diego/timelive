@@ -15,10 +15,10 @@ import Focus from "../Focus/Focus";
     }
 
     new() {
-        let T = p.globalTime;
+        let T = p.time;
         this.setName('',T);
         this.setDescription('',T);
-        this.setStart(p.globalTime.get(),T);
+        this.setStart(p.time.get(),T);
         this.setEnd(0,T);
         this.setImg('',T);
         this.ID = 0;
@@ -57,7 +57,7 @@ import Focus from "../Focus/Focus";
 
     /** Writes the variables from the data into the web page */
     writeVariables() {
-        let T = p.globalTime;
+        let T = p.time;
         this.controller.elementName.val(this.getName(T));
         this.controller.elementDescription.val(this.getDescription(T));
         this.controller.elementStart.val(this.getStart(T));
@@ -68,7 +68,7 @@ import Focus from "../Focus/Focus";
     
     /** Reads the variables from the web page and writes it as data */
     readVariables() {
-        let T = p.globalTime;
+        let T = p.time;
         this.setName(this.controller.elementName.val(),T);
         this.setDescription(this.controller.elementDescription.val(),T);
         this.setStart(this.controller.elementStart.val(),T);
@@ -79,7 +79,7 @@ import Focus from "../Focus/Focus";
     /* New elements are appended at the end of the public array,
        In existing elements are updated only the attributes with changed values */
     save() {
-        let T = p.globalTime;
+        let T = p.time;
         this.isNewElement = this.ID === 0;
         if(this.ID === 0) {
             let newElement = new Element();

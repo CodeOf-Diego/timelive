@@ -32,7 +32,7 @@ export default class CanvasElements {
 
     /* Main element drawing function */
     #updateElement(ID) {
-        let T = p.globalTime
+        let T = p.time
 
         let element = this.elements[ID]
 

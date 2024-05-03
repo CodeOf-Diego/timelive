@@ -1,6 +1,7 @@
 import ControllerGlobal from "../Controllers/ControllerGlobal";
 import { p } from "../../Project";
 import EU from "../Utils/ElementUtils"
+import Timeline from "../Timeline/Timeline";
 
 export default class ControllerSettings extends ControllerGlobal{
     constructor() {
@@ -21,11 +22,10 @@ export default class ControllerSettings extends ControllerGlobal{
             if (p.settings.controller.active) {
                 p.settings.controller.infoLength.val()
                 p.settings.length.set(parseInt(this.infoLength.val()))
-                if (p.globalTime.get() > p.settings.length.get()) {
-                    p.globalTime.set(p.settings.length.get());
-
+                if (p.time.get() > p.settings.length.get()) {
+                    p.time.set(p.settings.length.get());
                 }
-                p.timeline.draw();
+                Timeline.draw();
             }
         });
     }
