@@ -15,7 +15,7 @@ export default class ElementUtils {
     }
 
     ready(callback) {
-        document.addEventListener('DOMContentLoaded', callback);
+        window.addEventListener('load', callback);
     }
 
     /** Adds an onClick event to the main element of the class, if specified */

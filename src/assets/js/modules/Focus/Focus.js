@@ -30,19 +30,19 @@ export default class Focus {
         switch (Focus.get()) {
             case 'main':
                 p.toolbox.controller.enable();
-                p.settings.controller.disable();
+                p.settings.disable();
                 break;
             case 'element':
                 p.toolbox.controller.enable();
-                p.settings.controller.disable();
+                p.settings.disable();
                 break;
             case 'settings':
                 p.toolbox.controller.disable();
-                p.settings.controller.enable();
+                p.settings.enable();
                 break;
             case 'menu':
                 p.toolbox.controller.disable();
-                p.settings.controller.disable();
+                p.settings.disable();
                 p.menu.controller.enable();
                 break;
 

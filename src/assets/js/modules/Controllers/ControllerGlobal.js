@@ -2,12 +2,9 @@ import ElementUtils from "../Utils/ElementUtils";
 
 export default class ControllerGlobal extends ElementUtils {
   
-  constructor(el = undefined) {
+  constructor() {
     super()
     this.active = 1;
-    if (el !== undefined) {
-      this.bindID(el)
-    }
   }
   
   enable() {
@@ -17,7 +14,11 @@ export default class ControllerGlobal extends ElementUtils {
     this.active = 0;
   }
   
-  bindID(el) {
-    this.el = ElementUtils.byID(el);
+  modelAttributes() {
+    for (let attribute in this.Model) {
+      Object.defineProperty(this, attribute, {
+        get: function()   {return this.Model[attribute]}
+      });
+    } 
   }
 }

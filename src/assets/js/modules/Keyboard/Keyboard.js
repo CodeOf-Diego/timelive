@@ -1,4 +1,5 @@
 import { p } from "../../Project";
+import Settings from "../../controllers/Settings.controller";
 import ElementInputController from "../Entities/ElementInputController";
 import Focus from "../Focus/Focus";
 import Timeline from "../Timeline/Timeline";
@@ -82,7 +83,7 @@ export default class Keyboard {
     settingsControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.settings.unload();
+                Settings.close();
                 break;
         }
     }

@@ -1,5 +1,4 @@
 import TimeX from "./TimeX";
-import Settings from "./modules/Settings/Settings";
 import Menu from "./modules/Menu/Menu";
 import Toolbox from "./modules/Toolbox/Toolbox";
 import Timeline from "./modules/Timeline/Timeline";
@@ -9,6 +8,7 @@ import Canvas from "./modules/Canvas/Canvas";
 import ElementInput from "./modules/Entities/ElementInput";
 import Element from "./modules/Entities/Element";
 import ImageLoader from "./modules/ImageLoader/ImageLoader";
+import Settings from "./controllers/Settings.controller";
 
 class Project {
     constructor() {
@@ -71,7 +71,7 @@ class Project {
 
     /* Sets up all the controllers and the elements of the project */
     setUp() {
-
+        Settings.bind()
     }
 
     /** Starts the engine */

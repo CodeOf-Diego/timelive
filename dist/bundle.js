@@ -26,99 +26,6 @@ class TimeX {
 	}
 }
 
-;// CONCATENATED MODULE: ./src/assets/js/TypeX.js
-/*
- Defines a 1 dimensional abstract variable whose value can change overtime
- The variable can be divided in 1 or more regions of time, each of wich has it's own value
- that can be extracted from any point in the included region
-
- Note that each region starts from an included timeX to the next timeX excluded, or to infinity for the last region
-*/
-class TypeX {
-
-	/* The default value of the data is a region going from 0 to infinity with null value */
-	constructor() {
-	   this.data = [null];
-	   this.regions = 1;
-	}
-
-	/* Check if region start in given time */
-	isRegionStart(timeX) {
-		return Object.keys(this.data).indexOf(String(timeX.get())) >= 0;
-	}
-
-	/* Find the beginning of a region from a given time */
-	findRegionStartTimeX(timeX) {
-		let keyframes = Object.keys(this.data);
-		return this.findRegionStartRecursive(keyframes, 0, keyframes.length -1, timeX)
-	}
-
-	/* Binary search the start time of a region given a time. The start time is included in the region */
-	findRegionStartRecursive(keyframes, min, max, timeX) {
-		let avg = parseInt((max + min) / 2);
-		if (max - min > 1) {
-			if (keyframes[avg] < timeX.get())
-					return this.findRegionStartRecursive(keyframes, avg, max, timeX);
-			else if (keyframes[avg] > timeX.get())
-					return this.findRegionStartRecursive(keyframes, min, avg, timeX);
-			else
-					return keyframes[avg];
-		}
-		else {
-			if (keyframes[max] <= timeX.get())
-				return keyframes[max];
-			return keyframes[min];
-		}
-	}
-
-	/* Adds a new value at a specific time, changes the number of total regions */
-	set(data, timeX) {
-		if (!(this.isRegionStart(timeX)))
-				this.regions += 1;
-		this.data[timeX.get()] = data;
-	}
-
-	/* Removes a region. If removed the 1st of multiple region the next one will expand to time 0 */
-	unset(timeX) {
-		if (this.regions == 1) {
-			this.data = [null];
-		}
-		else {
-			let time = this.findRegionStartTimeX(timeX);
-			this.regions -= 1;
-			if (time > 0) {
-				delete this.data[time];
-			}
-			else {
-				 let keyframes = Object.keys(this.data);
-				 this.data[keyframes[0]] = this.data[keyframes[1]];
-	 			delete this.data[keyframes[1]];
-			}
-		}
-	}
-
-	/* Return the data value at a specific time */
-	get(timeX) {
-		return this.data[this.findRegionStartTimeX(timeX)];
-	}
-
-	/* Move an existing region start in the timeline. The region starting at 0 cannot be moved */
-	move(timeFrom, timeTo) {
-		if (this.isRegionStart(timeFrom) && timeFrom.get() != 0 && timeFrom.get() != timeTo.get()) {
-
-			if (this.isRegionStart(timeTo))
-				this.regions--;
-			this.data[timeTo.get()] = this.data[timeFrom.get()];
-			delete this.data[timeFrom.get()];
-		}
-	}
-
-	/* Duplicates the data and returns a copy */
-	duplicate() {
-		return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
-	}
-}
-
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Utils/ElementUtils.js
 class ElementUtils {
     
@@ -137,7 +44,7 @@ class ElementUtils {
     }
 
     ready(callback) {
-        document.addEventListener('DOMContentLoaded', callback);
+        window.addEventListener('load', callback);
     }
 
     /** Adds an onClick event to the main element of the class, if specified */
@@ -167,12 +74,9 @@ class ElementUtils {
 
 class ControllerGlobal extends ElementUtils {
   
-  constructor(el = undefined) {
+  constructor() {
     super()
     this.active = 1;
-    if (el !== undefined) {
-      this.bindID(el)
-    }
   }
   
   enable() {
@@ -182,263 +86,15 @@ class ControllerGlobal extends ElementUtils {
     this.active = 0;
   }
   
-  bindID(el) {
-    this.el = ElementUtils.byID(el);
+  modelAttributes() {
+    for (let attribute in this.Model) {
+      Object.defineProperty(this, attribute, {
+        get: function()   {return this.Model[attribute]}
+      });
+    } 
   }
 }
 
-;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/ControllerTimeline.js
-
-
-
-
-
-/*
-Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
- alla stampa e all'utilizzo dei parametri altrove
-*/
-class ControllerTimeline extends ControllerGlobal{
-  constructor() {
-    super();
-    this.ready(()=>{
-      this.timeline = new ElementUtils("timeline")
-      this.timelineContainer = new ElementUtils("timelineContainer")
-      this.controllers()
-    })
-  }
-
-  controllers() {
-    this.timeline.onChange(() => {
-      if (p.timeline.controller.active) {
-        p.time.set(parseInt(p.timeline.controller.timeline.val()));
-        Timeline.draw();
-        p.canvas.draw();
-      }
-    })
-  }
-}
-
-;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/Timeline.js
-
-
-
-class Timeline {
-    constructor() {
-        this.controller = new ControllerTimeline();
-    }
-
-    /** Builds dinamically the timeline component depending on the project settings */
-    static draw() {
-        // update graphics of the timeline
-        p.timeline.controller.timeline.el.innerHTML = ""
-        let T = p.time;
-        for (let i = 0; i <= p.settings.length.get() ; i++) {
-            p.timeline.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
-        }
-    }
-
-    static show() {
-        p.timeline.controller.timelineContainer.show()
-    }
-
-    static hide() {
-        p.timeline.controller.timelineContainer.hide()
-    }
-
-}
-;// CONCATENATED MODULE: ./src/assets/js/modules/Settings/ControllerSettings.js
-
-
-
-
-
-class ControllerSettings extends ControllerGlobal{
-    constructor() {
-        super();
-        this.ready(()=>{
-            this.boxInfo = new ElementUtils("boxInfo");
-            this.infoLength = new ElementUtils("infoLength");
-            this.infoName = new ElementUtils("infoName");
-            this.infoDescription = new ElementUtils("infoDescription");
-            this.infoImg = new ElementUtils("infoImg");
-            this.controllers();
-        })
-    }
-    
-    controllers() {
-        /* when the project lenght web element is changed, updates the project data and pushes back if the world time is above the new max */
-        this.infoLength.onChange(() => {
-            if (p.settings.controller.active) {
-                p.settings.controller.infoLength.val()
-                p.settings.length.set(parseInt(this.infoLength.val()))
-                if (p.time.get() > p.settings.length.get()) {
-                    p.time.set(p.settings.length.get());
-                }
-                Timeline.draw();
-            }
-        });
-    }
-}
-;// CONCATENATED MODULE: ./src/assets/js/modules/Focus/Focus.js
-
-
-class Focus {
-    constructor() {
-        this.focus = "menu";
-    }
-
-    static set(newFocus) {
-        if (Focus.isValid(newFocus) && this.focus !== newFocus) {
-            p.focus = newFocus;
-            Focus.updateControllers();
-        }
-    }
-
-    static get() {
-        return p.focus;
-    }
-
-    static isValid(newFocus) {
-        return [
-            'main',
-            'element',
-            'settings',
-            'menu'
-        ].includes(newFocus)
-
-    }
-
-    static updateControllers() {
-        switch (Focus.get()) {
-            case 'main':
-                p.toolbox.controller.enable();
-                p.settings.controller.disable();
-                break;
-            case 'element':
-                p.toolbox.controller.enable();
-                p.settings.controller.disable();
-                break;
-            case 'settings':
-                p.toolbox.controller.disable();
-                p.settings.controller.enable();
-                break;
-            case 'menu':
-                p.toolbox.controller.disable();
-                p.settings.controller.disable();
-                p.menu.controller.enable();
-                break;
-
-        }
-    }
-
-}
-;// CONCATENATED MODULE: ./src/assets/js/modules/Settings/Settings.js
-
-
-
-
-
-/**
- * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
- * This class handles the logic while the respective controller binds it to the web elements
- * it has the following functionalities:
- * 
- * new() - set up a new project
- * load() - opens an existing project and loads it in the page
- * unload() - closes a project
- * WIP
- */
-
-class Settings {
-
-    constructor() {
-        this.name;
-        this.length = new TimeX();
-        this.timeType;
-        this.tags;
-        this.description = new TypeX();
-        this.bgImage = new TypeX();
-        this.controller = new ControllerSettings();
-    }
-
-    new() {
-        let T = p.time;
-        this.name = "New Project";
-        this.length.set(10);
-        this.timeType = 'episode';
-        this.tags = [];
-        this.description.set("", T);
-        this.bgImage.set("", T);
-    }
-
-    open() {
-        this.controller.boxInfo.show()
-
-        /** Handles the drawing of the project settings */
-        let T = p.time;
-        this.controller.infoName.val(this.name);
-        this.controller.infoLength.val(this.length.get());
-        this.controller.infoDescription.val(this.description.get(T));
-        this.controller.infoImg.val(this.bgImage.get(T));
-        
-        Focus.set('settings');
-    }
-
-    unload() {
-        this.controller.boxInfo.hide()
-
-        Focus.set('main');
-        //refresh
-
-    }
-
-}
-
-
-
-
-/*
-
-when opening for the first time a new untitled project is created with default autosave after every 30 sec
-
-
-
-
-
-
-
-project saving options
-
-project settings contiente
-let T = p.time;
-this.name = "New Project";
-this.length.set(10);
-this.timeType = 'episode';
-this.tags = [];
-this.description.set("", T);
-this.bgImage.set("", T);
-
-- doAutosave (default yes, updates the locally stored data of the project after every edit)
-- autosaveDuration (default 30 sec, used only if doAutosave is on)
-- openByDefault (if on the project will autoamtically be opened. If multiple project have this option the lates one by modification date will be opened)
-
-
-
-menu settings
-
-project settings
-...  
-
-then
-- save locally (saves in the local storage)
-- export (to allow outside storage)
-- import new project (by link or by raw content)
-
-
-list of other projects (excluding the current one)
-- load project, loads into memory all the project informations for the selected project
-- delete (deletes all the data of the selected project. if all local projects are deleted a new one is created by default)
-*/
 ;// CONCATENATED MODULE: ./src/assets/js/modules/Menu/MenuController.js
 
 
@@ -543,6 +199,410 @@ class Toolbox {
         this.controller = new ControllerToolbox();
     }
 }
+;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/ControllerTimeline.js
+
+
+
+
+
+/*
+Imposta tutti i dati di configurazione in modo da avere tutto cio che serve
+ alla stampa e all'utilizzo dei parametri altrove
+*/
+class ControllerTimeline extends ControllerGlobal{
+  constructor() {
+    super();
+    this.ready(()=>{
+      this.timeline = new ElementUtils("timeline")
+      this.timelineContainer = new ElementUtils("timelineContainer")
+      this.controllers()
+    })
+  }
+
+  controllers() {
+    this.timeline.onChange(() => {
+      if (p.timeline.controller.active) {
+        p.time.set(parseInt(p.timeline.controller.timeline.val()));
+        Timeline_Timeline.draw();
+        p.canvas.draw();
+      }
+    })
+  }
+}
+
+;// CONCATENATED MODULE: ./src/assets/js/modules/Timeline/Timeline.js
+
+
+
+class Timeline_Timeline {
+    constructor() {
+        this.controller = new ControllerTimeline();
+    }
+
+    /** Builds dinamically the timeline component depending on the project settings */
+    static draw() {
+        // update graphics of the timeline
+        p.timeline.controller.timeline.el.innerHTML = ""
+        let T = p.time;
+        for (let i = 0; i <= p.settings.length.get() ; i++) {
+            p.timeline.controller.timeline.el.appendChild(new Option(i.toString(), i.toString(),false, T.get() === i))
+        }
+    }
+
+    static show() {
+        p.timeline.controller.timelineContainer.show()
+    }
+
+    static hide() {
+        p.timeline.controller.timelineContainer.hide()
+    }
+
+}
+;// CONCATENATED MODULE: ./src/assets/js/TypeX.js
+/*
+ Defines a 1 dimensional abstract variable whose value can change overtime
+ The variable can be divided in 1 or more regions of time, each of wich has it's own value
+ that can be extracted from any point in the included region
+
+ Note that each region starts from an included timeX to the next timeX excluded, or to infinity for the last region
+*/
+class TypeX {
+
+	/* The default value of the data is a region going from 0 to infinity with null value */
+	constructor() {
+	   this.data = [null];
+	   this.regions = 1;
+	}
+
+	/* Check if region start in given time */
+	isRegionStart(timeX) {
+		return Object.keys(this.data).indexOf(String(timeX.get())) >= 0;
+	}
+
+	/* Find the beginning of a region from a given time */
+	findRegionStartTimeX(timeX) {
+		let keyframes = Object.keys(this.data);
+		return this.findRegionStartRecursive(keyframes, 0, keyframes.length -1, timeX)
+	}
+
+	/* Binary search the start time of a region given a time. The start time is included in the region */
+	findRegionStartRecursive(keyframes, min, max, timeX) {
+		let avg = parseInt((max + min) / 2);
+		if (max - min > 1) {
+			if (keyframes[avg] < timeX.get())
+					return this.findRegionStartRecursive(keyframes, avg, max, timeX);
+			else if (keyframes[avg] > timeX.get())
+					return this.findRegionStartRecursive(keyframes, min, avg, timeX);
+			else
+					return keyframes[avg];
+		}
+		else {
+			if (keyframes[max] <= timeX.get())
+				return keyframes[max];
+			return keyframes[min];
+		}
+	}
+
+	/* Adds a new value at a specific time, changes the number of total regions */
+	set(data, timeX) {
+		if (!(this.isRegionStart(timeX)))
+				this.regions += 1;
+		this.data[timeX.get()] = data;
+	}
+
+	/* Removes a region. If removed the 1st of multiple region the next one will expand to time 0 */
+	unset(timeX) {
+		if (this.regions == 1) {
+			this.data = [null];
+		}
+		else {
+			let time = this.findRegionStartTimeX(timeX);
+			this.regions -= 1;
+			if (time > 0) {
+				delete this.data[time];
+			}
+			else {
+				 let keyframes = Object.keys(this.data);
+				 this.data[keyframes[0]] = this.data[keyframes[1]];
+	 			delete this.data[keyframes[1]];
+			}
+		}
+	}
+
+	/* Return the data value at a specific time */
+	get(timeX) {
+		return this.data[this.findRegionStartTimeX(timeX)];
+	}
+
+	/* Move an existing region start in the timeline. The region starting at 0 cannot be moved */
+	move(timeFrom, timeTo) {
+		if (this.isRegionStart(timeFrom) && timeFrom.get() != 0 && timeFrom.get() != timeTo.get()) {
+
+			if (this.isRegionStart(timeTo))
+				this.regions--;
+			this.data[timeTo.get()] = this.data[timeFrom.get()];
+			delete this.data[timeFrom.get()];
+		}
+	}
+
+	/* Duplicates the data and returns a copy */
+	duplicate() {
+		return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+	}
+}
+
+;// CONCATENATED MODULE: ./src/assets/js/modules/Focus/Focus.js
+
+
+class Focus {
+    constructor() {
+        this.focus = "menu";
+    }
+
+    static set(newFocus) {
+        if (Focus.isValid(newFocus) && this.focus !== newFocus) {
+            p.focus = newFocus;
+            Focus.updateControllers();
+        }
+    }
+
+    static get() {
+        return p.focus;
+    }
+
+    static isValid(newFocus) {
+        return [
+            'main',
+            'element',
+            'settings',
+            'menu'
+        ].includes(newFocus)
+
+    }
+
+    static updateControllers() {
+        switch (Focus.get()) {
+            case 'main':
+                p.toolbox.controller.enable();
+                p.settings.disable();
+                break;
+            case 'element':
+                p.toolbox.controller.enable();
+                p.settings.disable();
+                break;
+            case 'settings':
+                p.toolbox.controller.disable();
+                p.settings.enable();
+                break;
+            case 'menu':
+                p.toolbox.controller.disable();
+                p.settings.disable();
+                p.menu.controller.enable();
+                break;
+
+        }
+    }
+
+}
+;// CONCATENATED MODULE: ./src/assets/js/models/Settings.model.js
+
+
+
+
+
+class SettingsModel {
+    
+    constructor() {
+        this.name;
+        this.length = new TimeX();
+        this.timeType;
+        this.tags;
+        this.description = new TypeX();
+        this.bgImage = new TypeX();
+    }
+
+    new() {
+        let T = p.time;
+        this.name = "New Project";
+        this.length.set(10);
+        this.timeType = 'episode';
+        this.tags = [];
+        this.description.set("", T);
+        this.bgImage.set("", T);
+    }
+
+    load() {
+        
+    }
+
+}
+
+
+;// CONCATENATED MODULE: ./src/assets/js/utils/Utils.js
+class Utils {
+    el;
+    
+    constructor(id = "") {
+        if (id !== "") {
+            this._el = Utils.byID(id)
+        }
+    }
+
+    show() {
+        this._el.style.display = "block"
+    }
+
+    hide() { 
+        this._el.style.display = "none"
+    }
+
+    ready(callback) {
+        this._el.addEventListener('load', callback);
+    }
+
+    /** Adds an onClick event to the main element of the class, if specified */
+    onClick(callback) {
+        this._el.addEventListener('click',callback);
+    }
+    
+    onChange(callback) {
+        this._el.addEventListener('change',callback);
+    }
+
+    focus() {
+        this._el.focus()
+    }
+
+    val(value = null) {
+        if (value === null) 
+            return this._el.value
+            this._el.value = value
+    }
+
+
+    static byID(elementId) {
+        return document.getElementById(elementId);
+    }
+}
+;// CONCATENATED MODULE: ./src/assets/js/views/BaseView.js
+
+
+class BaseView {
+
+    /**
+     * if an object structure of the elements is defined in the view
+     * binds them to allow interaction with them
+     * @param {id:[string]} this._selectors 
+     */
+    linkSelectors() {
+        if (this._selectors !== undefined) {
+            for (let i in this._selectors.id) 
+                this[this._selectors.id[i]] = new Utils(this._selectors.id[i]) 
+        }
+    }
+
+}
+;// CONCATENATED MODULE: ./src/assets/js/views/Settings.view.js
+
+
+
+/**
+ * @param {Utils} boxInfo 
+ * @param {Utils} infoLength 
+ * @param {Utils} infoName 
+ * @param {Utils} infoDescription 
+ * @param {Utils} infoImg 
+ */
+class SettingsView extends BaseView {
+
+    /** Set up the class, listing the elements that will have interaction once binded */
+    constructor() {
+        super()
+        this._selectors = {id:[
+            "boxInfo",
+            "infoLength",
+            "infoName",
+            "infoDescription",
+            "infoImg",
+        ]}
+    }
+}
+
+;// CONCATENATED MODULE: ./src/assets/js/controllers/Settings.controller.js
+
+
+
+
+
+
+
+/**
+ * Global definition of a project, contains all required data to differenciate it from others and open/close/quicksave/upload a project
+ * This class handles the logic while the respective controller binds it to the web elements
+ * it has the following functionalities:
+ * 
+ * new() - set up a new project
+ * load() - opens an existing project and loads it in the page
+ * unload() - closes a project
+ * WIP
+ */
+
+class Settings extends ControllerGlobal {
+
+    constructor() {
+        super()
+        this.Model = new SettingsModel()
+        this.View = new SettingsView()
+        this.modelAttributes();
+    }
+
+    /** Binds the initial events and selectors when the page is fully loaded */
+    static bind() {
+        p.settings.View.linkSelectors()
+        p.settings.View.infoLength.onChange(Settings.changedLenght);
+    }
+    
+    /** when the project lenght web element is changed, updates the project data and pushes back if the world time is above the new max */
+    static changedLenght() {
+        if (p.settings.controller.active) {
+            p.settings.controller.infoLength.val()
+            p.settings.length.set(parseInt(this.infoLength.val()))
+            if (p.time.get() > p.settings.length.get()) {
+                p.time.set(p.settings.length.get());
+            }
+            Timeline.draw();
+        }
+    }
+
+    /** Set up new project settings */
+    new() {
+        this.Model.new();
+    }
+
+    /** Loads project settings of an existing project */
+    load() {
+        this.Model.load();
+    }
+
+    /** Opens the settings tab */
+    open() {
+        /** Handles the drawing of the project settings */
+        let T = p.time;
+        this.View.infoName.val(this.name);
+        this.View.infoLength.val(this.length.get());
+        this.View.infoDescription.val(this.description.get(T));
+        this.View.infoImg.val(this.bgImage.get(T));
+        
+        this.View.boxInfo.show()
+        Focus.set('settings');
+    }
+
+    /** Closes the settings tab */
+    static close() {
+        p.settings.View.boxInfo.hide()
+        Focus.set('main');
+    }
+}
 ;// CONCATENATED MODULE: ./src/assets/js/modules/ImageLoader/ImageLoader.js
 
 
@@ -622,6 +682,7 @@ class ElementInputController extends ControllerGlobal{
 
 
 
+
 /**
  * Handles keyboard interactions
  * The class has a listener that records inputs and execute any possible action related to it
@@ -684,14 +745,14 @@ class Keyboard {
             case 'ArrowLeft':
                 if (p.time.get() > 0) {
                     p.time.set(p.time.get() - 1);
-                    Timeline.draw();
+                    Timeline_Timeline.draw();
                     p.canvas.draw();
                 }
                 break;
             case 'ArrowRight':
                 if (p.time.get() < p.settings.length.get()) {
                     p.time.set(p.time.get() + 1);
-                    Timeline.draw();
+                    Timeline_Timeline.draw();
                     p.canvas.draw();
                 }
                 break;
@@ -701,7 +762,7 @@ class Keyboard {
     settingsControls(e) {
         switch (e.key) {
             case 'Escape':
-                p.settings.unload();
+                Settings.close();
                 break;
         }
     }
@@ -1051,7 +1112,7 @@ class Project {
         
         this.menu = new Menu();
         this.toolbox = new Toolbox();
-        this.timeline = new Timeline();
+        this.timeline = new Timeline_Timeline();
         this.settings = new Settings();
         this.keyboard = new Keyboard();
         this.focus = new Focus();
@@ -1081,8 +1142,8 @@ class Project {
 
         Focus.set('main')
         Menu.hide()
-        Timeline.draw()
-        Timeline.show()
+        Timeline_Timeline.draw()
+        Timeline_Timeline.show()
     }
 
     open(projectData) {
@@ -1105,7 +1166,7 @@ class Project {
 
     /* Sets up all the controllers and the elements of the project */
     setUp() {
-
+        Settings.bind()
     }
 
     /** Starts the engine */
@@ -1128,10 +1189,10 @@ const p = new Project();
 
 
 ;// CONCATENATED MODULE: ./src/assets/js/index.js
-// Import modules
 
 
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
+    p.setUp();
     p.start();
 });
 /******/ })()

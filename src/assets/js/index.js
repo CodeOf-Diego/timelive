@@ -1,6 +1,6 @@
-// Import modules
 "use strict";
 import {p} from './Project.js';
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
+    p.setUp();
     p.start();
 });
